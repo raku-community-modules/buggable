@@ -4,8 +4,8 @@ use lib </home/zoffix/CPANPRC/IRC-Client/lib /var/www/tmp/IRC-Client/lib .>;
 use IRC::Client;
 
 class JoinerBot {
-    method irc-to-me ( $e where /^join \s+ $<channel>=('#'\S+)/ ) {
-        $e.irc.join: $<channel>;
+    method irc-to-me ( $e where /^nick \s+ $<name>=(\S+)/ ) {
+        $e.irc.nick: $<name>;
     }
 }
 
