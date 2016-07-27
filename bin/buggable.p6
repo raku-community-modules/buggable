@@ -2,21 +2,10 @@
 use lib </home/zoffix/CPANPRC/IRC-Client/lib /var/www/tmp/IRC-Client/lib .>;
 
 use IRC::Client;
-use Pastebin::Shadowcat;
-use Mojo::UserAgent:from<Perl5>;
 
-class Bash {
-    constant $BASH_URL = 'http://bash.org/?random1';
-    constant $cache    = Channel.new;
-    has        $!ua    = Mojo::UserAgent.new;
-
-    multi method irc-to-me ($t where /bash/) {
-        $t.text;
-        # start $cache.poll or do { self!fetch-quotes; $cache.poll };
-    }
-
-    method !fetch-quotes {
-        # $cache.send: $_ for $!ua.get($BASH_URL).res.dom.find('.qt').each».all_text;
+class JoinerBot {
+    method irc-to-me ( $e where /^join \s+ $<channel>=('#'\S+)/ ) {
+        $e.irc.join: $<channel>;
     }
 }
 
@@ -25,10 +14,4 @@ class Bash {
     :host(%*ENV<IRC_HOST> // 'localhost')
     :channels<#perl6>
     :debug
-    :plugins(Bash.new)
-    :filters(
-        -> $text where .chars > 20 {
-            'Meow!'
-            # 'See: ' ~ Pastebin::Shadowcat.new.paste: $text;
-        }
-    )
+    :plugins(JoinerBot.new)
