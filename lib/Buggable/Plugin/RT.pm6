@@ -21,9 +21,11 @@ multi method irc-privmsg-channel ($e where /:i ^ 'rt' $ /) {
 }
 
 multi method irc-privmsg-channel ($e where /:i ^'rt' \s+ $<tag>=(\S+.*)\s*$ /) {
-    my $tag = $<tag>.uc;
+    my $tag = $<tag>.uc.trim;
     my @tickets = $!db.tagged: $tag;
     my $file = self!save-ticket-report: @tickets, :nick($e.nick), :$tag;
+
+    return "Found no tickets with tag \x[2]$tag\x[2]";
 
     my $n = +@tickets;
     my $t-name = $n > 1 ?? 'tickets' !! 'ticket';
