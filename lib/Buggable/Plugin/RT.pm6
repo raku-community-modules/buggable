@@ -25,7 +25,7 @@ multi method irc-privmsg-channel ($e where /:i ^'rt' \s+ $<tag>=(\S+.*)\s*$ /) {
     my @tickets = $!db.tagged: $tag;
     my $file = self!save-ticket-report: @tickets, :nick($e.nick), :$tag;
 
-    return "Found no tickets with tag \x[2]$tag\x[2]";
+    return "Found no tickets with tag \x[2]$tag\x[2]" unless @tickets;
 
     my $n = +@tickets;
     my $t-name = $n > 1 ?? 'tickets' !! 'ticket';
