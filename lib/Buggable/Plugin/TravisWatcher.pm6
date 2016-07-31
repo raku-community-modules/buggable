@@ -16,9 +16,12 @@ method irc-privmsg-channel (
     for @failed -> $id {
         my $job = ua-get-json 'https://api.travis-ci.org/jobs/' ~ $id;
 
+        return "build log missing from at least one job."
+            ~ " Check results manually." unless $job<log>;
+
         @timeout.push: $id
             if $job<log> ~~ /
-                "No output has been received in the last 10m0s, this"
+                "no output has been received in the last 10m0s, this"
                 " potentially indicates a stalled build or something wrong"
                 " with the build itself.\n\nThe build has been terminated\n\n"
             $/;
@@ -26,11 +29,11 @@ method irc-privmsg-channel (
 
     if @failed == 1 {
         return @timeout == @failed
-            ?? "One build failed due to timeout."
-            !! "One build failed but NOT due to timeout.";
+            ?? "one build failed due to timeout."
+            !! "one build failed but NOT due to timeout.";
     }
 
-    return "{+@failed} build failed. "
+    return "{+@failed} builds failed. "
         ~ (@timeout == @failed ?? "All" !! "ONLY {+@timeout}" )
         ~ " due to timeout";
 }
