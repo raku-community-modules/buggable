@@ -1,0 +1,23 @@
+{
+    "perl"         : "6.c",
+    "name"         : "buggable",
+    "version"      : "1.001001",
+    "description"  : "Helper bot for Perl 6 development",
+    "depends"      : [
+        "IRC::Client",
+        "JSON::Fast",
+        "HTTP::UserAgent"
+    ],
+    "test-depends" : [
+        "Test"
+    ],
+    "provides"     : {
+        "Buggable::UA" : "lib/Buggable/UA.pm6",
+        "Buggable::Plugin::TravisWatcher":
+            "lib/Buggable/Plugin::TravisWatcher.pm6"
+    },
+    "authors" : ["Zoffix Znet"],
+    "support" : {
+        "source" : "git://github.com/zoffixznet/perl6-buggable.git"
+    }
+}

@@ -1,21 +1,19 @@
 #!/usr/bin/env perl6
-use lib </home/zoffix/CPANPRC/IRC-Client/lib /var/www/tmp/IRC-Client/lib .>;
+use lib <
+    /home/zoffix/CPANPRC/IRC-Client/lib
+    /var/www/tmp/IRC-Client/lib
+    lib
+    .
+>;
 
 use IRC::Client;
-
-class AlarmBot does IRC::Client::Plugin {
-    method irc-connected ($) {
-        start react {
-            whenever Supply.interval(3) {
-                $.irc.send: :where<#perl6> :text<Three seconds passed!>;
-            }
-        }
-    }
-}
+use Buggable::Plugin::TravisWatcher;
 
 .run with IRC::Client.new:
-    :nick<MahBot>
-    :host<localhost>
-    :channels<#perl6>
+    :nick<buggable>
+    :host(%*ENV<BUGGABLE_IRC_HOST> // 'irc.freenode.net')
+    :channels<#perl6-dev>
     :debug
-    :plugins[AlarmBot.new]
+    :plugins(
+        Buggable::Plugin::TravisWatcher.new,
+    )
