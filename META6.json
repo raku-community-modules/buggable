@@ -6,13 +6,17 @@
     "depends"      : [
         "IRC::Client",
         "JSON::Fast",
-        "HTTP::UserAgent"
+        "HTTP::UserAgent",
+        "RT::REST::Client",
+        "DBIish"
     ],
     "test-depends" : [
         "Test"
     ],
     "provides"     : {
-        "Buggable::UA" : "lib/Buggable/UA.pm6",
+        "Buggable::UA"     : "lib/Buggable/UA.pm6",
+        "Buggable::DB"     : "lib/Buggable/DB.pm6",
+        "Buggable::Config" : "lib/Buggable/Config.pm6",
         "Buggable::Plugin::TravisWatcher":
             "lib/Buggable/Plugin::TravisWatcher.pm6"
     },

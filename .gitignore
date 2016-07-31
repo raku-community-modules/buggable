@@ -1,3 +1,5 @@
 .precomp
 lib/.precomp
 password
+config.json
+tickets.sqlite.db
