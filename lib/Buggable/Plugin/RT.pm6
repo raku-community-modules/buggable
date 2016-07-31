@@ -12,7 +12,7 @@ submethod BUILD (:$!report-dir, :$db-file) {
     $!db = Buggable::DB.new: :$db-file;
 }
 
-multi method irc-privmsg-channel ($e where /:i ^ 'rt' $ /) {
+multi method irc-to-me ($e where /:i ^ 'rt' $ /) {
     my @tickets = $!db.all-tickets.sort({.<tags>});
     my $file = self!save-ticket-report: @tickets, :nick($e.nick);
 
@@ -20,7 +20,7 @@ multi method irc-privmsg-channel ($e where /:i ^ 'rt' $ /) {
         ~ "   \x[1D]Details: $report-url$file.html\x[1D]";
 }
 
-multi method irc-privmsg-channel ($e where /:i ^'rt' \s+ $<tag>=(\S+.*)\s*$ /) {
+multi method irc-to-me ($e where /:i ^'rt' \s+ $<tag>=(\S+.*)\s*$ /) {
     my $tag = $<tag>.uc.trim;
     my @tickets = $!db.tagged: $tag;
     my $file = self!save-ticket-report: @tickets, :nick($e.nick), :$tag;
