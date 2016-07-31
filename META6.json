@@ -8,6 +8,7 @@
         "JSON::Fast",
         "HTTP::UserAgent",
         "RT::REST::Client",
+        "HTML::Entity",
         "DBIish"
     ],
     "test-depends" : [

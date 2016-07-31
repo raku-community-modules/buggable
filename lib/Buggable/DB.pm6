@@ -76,28 +76,13 @@ method all-tickets {
     )};
 }
 
-method stats {
-    my @tickets    = self.all-tickets;
+method stats (@tickets = self.all-tickets) {
     my $tag-counts = bag @tickets.map: { |.<tags> };
-    return join ', ',
-        reverse $tag-counts.sort(*.value).map: {"[{.key}]: {.value}"};
+    return join ', ', "TOTAL: {+@tickets}",
+        reverse $tag-counts.sort(*.value).map: {"{.key}: {.value}"};
 }
 
 method tagged ($tags is copy = ('UNTAGGED',)) {
     $tags = $tags.flat».uc;
     self.all-tickets.grep: { .<tags> ⊆ @$tags };
 }
-
-=finish
-
-Tickets
-    id
-    subject
-    content
-
-Tags
-    name
-
-One ticket can have many tags and many tickets can have the same tag [many to many]
-
------
