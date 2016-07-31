@@ -57,9 +57,10 @@ method !save-ticket-report (@tickets, :$tag, :$nick = '<anon>') {
         }
 
         h1 small { font-weight: normal; }
-        .tags { color: #999; }
-        td { padding: 5px 10px; }
-  		a { color: #44a; }
+        table    { width: 100%;         }
+        .tags    { color: #999;         }
+        td       { padding: 5px 10px;   }
+        a        { color: #44a;         }
     CSS
 
     my $out = qq:to/HTML/;
