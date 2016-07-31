@@ -13,7 +13,7 @@ use Buggable::Plugin::RT;
 .run with IRC::Client.new:
     :nick<buggable>,
     :host(%*ENV<BUGGABLE_IRC_HOST> // 'irc.freenode.net'),
-    :channels<#perl6-dev  #zofbot>,
+    :channels<#perl6-dev  #zofbot  #perl6>,
     |(:password(conf<irc-pass>) if conf<irc-pass>),
     :debug,
     :plugins(
