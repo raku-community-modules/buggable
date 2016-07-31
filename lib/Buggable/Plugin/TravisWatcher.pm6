@@ -29,11 +29,11 @@ method irc-privmsg-channel (
 
     if @failed == 1 {
         return @timeout == @failed
-            ?? "one build failed due to timeout."
-            !! "one build failed but NOT due to timeout.";
+            ?? "one build failed due to the timeout. No other failures."
+            !! "one build failed but NOT due to the timeout.";
     }
 
     return "{+@failed} builds failed. "
         ~ (@timeout == @failed ?? "All" !! "ONLY {+@timeout}" )
-        ~ " due to timeout";
+        ~ " due to the timeout";
 }
