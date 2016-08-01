@@ -17,6 +17,8 @@ class Buggable::Info {
     multi method irc-to-me ($ where /^\s* source \s*$/) {
         "See: https://github.com/zoffixznet/perl6-buggable";
     }
+
+    multi method irc-to-me ($ where /'bot' \s* 'snack'/) { "om nom nom nom"; }
 }
 
 .run with IRC::Client.new:
