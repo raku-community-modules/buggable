@@ -36,6 +36,8 @@ method irc-privmsg-channel (
     }
 
     return "{+@failed} builds failed. "
-        ~ (@timeout == @failed ?? "All" !! "ONLY {+@timeout}" )
-        ~ " due to the timeout";
+        ~ (
+            @timeout == @failed ?? "All"
+                !! @timeout == 0 ?? "NONE" !! "ONLY {+@timeout}"
+        ) ~ " due to the timeout";
 }
