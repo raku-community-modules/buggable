@@ -8,7 +8,9 @@ method irc-privmsg-channel (
     my $build = ua-get-json
         'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $<id>;
 
-    my @failed = $build<matrix>.grep({ .<result> ~~ Any:U }).map: *.<id>;
+    my @failed = $build<matrix>.grep({
+        .<result> ~~ Any:U or .<result> != 0
+    }).map: *.<id>;
     say "TravisWatcher: got {+@failed} builds [@failed.join(', ')]";
     return unless @failed;
 
