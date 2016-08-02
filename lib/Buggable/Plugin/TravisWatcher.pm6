@@ -22,11 +22,11 @@ method irc-privmsg-channel (
             ~ " Check results manually." unless $job<log>;
 
         @timeout.push: $id
-            if $job<log> ~~ /
-                "no output has been received in the last 10m0s, this"
+            if $job<log> ~~ m:i/
+                "No output has been received in the last 10m0s, this"
                 " potentially indicates a stalled build or something wrong"
                 " with the build itself.\n\nThe build has been terminated\n\n"
-            $/;
+            \s* $/;
     }
 
     if @failed == 1 {
