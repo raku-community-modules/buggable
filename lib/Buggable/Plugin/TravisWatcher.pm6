@@ -16,16 +16,18 @@ method irc-privmsg-channel (
 
     my @timeout;
     for @failed -> $id {
+        say "Fetching job $id";
         my $job = ua-get-json 'https://api.travis-ci.org/jobs/' ~ $id;
+        say "Fetched job $id";
 
         return "build log missing from at least one job."
             ~ " Check results manually." unless $job<log>;
 
         @timeout.push: $id
-            if $job<log> ~~ m:i/
-                "No output has been received in the last 10m0s, this"
+            if $job<log>.lc ~~ m/
+                "no output has been received in the last 10m0s, this"
                 " potentially indicates a stalled build or something wrong"
-                " with the build itself.\n\nThe build has been terminated\n\n"
+                " with the build itself.\n\nthe build has been terminated\n\n"
             \s* $/;
     }
 
