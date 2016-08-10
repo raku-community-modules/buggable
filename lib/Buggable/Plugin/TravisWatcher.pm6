@@ -1,12 +1,18 @@
-unit class Buggable::Plugin::TravisWatcher;
+use IRC::Client;
+unit class Buggable::Plugin::TravisWatcher does IRC::Client::Plugin;
 use Buggable::UA;
 
 method irc-privmsg-channel (
-    $ where /^ 'https://travis-ci.org/rakudo/rakudo/builds/' $<id>=\d+/
+    $e where /^ 'https://travis-ci.org/rakudo/rakudo/builds/' $<id>=\d+/
 ) {
+    my $result = self!process: ~$<id> or return;
+    $e.reply: $result;
+}
+
+method !process ($build-id) {
     say 'TravisWatcher: fetching travis build info';
     my $build = ua-get-json
-        'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $<id>;
+        'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $build-id;
 
     my @failed = $build<matrix>.grep({
         .<result> ~~ Any:U or .<result> != 0
