@@ -6,7 +6,7 @@ method irc-privmsg-channel (
     $e where /^ 'https://travis-ci.org/rakudo/rakudo/builds/' $<id>=\d+/
 ) {
     my $result = self!process: ~$<id> or return;
-    $e.reply: $result;
+    $.irc.send: :where($e.channel), :text("$result[0] [travis build above] $result[1]");
 }
 
 method !process ($build-id) {
@@ -26,8 +26,8 @@ method !process ($build-id) {
         my $job = ua-get-json 'https://api.travis-ci.org/jobs/' ~ $id;
         say "Fetched job $id";
 
-        return "build log missing from at least one job."
-            ~ " Check results manually." unless $job<log>;
+        return ['☢', "Build log missing from at least one job."
+            ~ " Check results manually."] unless $job<log>;
 
         @timeout.push: $id
             if $job<log>.lc ~~ m/
@@ -39,13 +39,14 @@ method !process ($build-id) {
 
     if @failed == 1 {
         return @timeout == @failed
-            ?? "one build failed due to the timeout. No other failures."
-            !! "one build failed but NOT due to the timeout.";
+            ?? ['✓', "One job failed due to the timeout. No other failures."]
+            !! ['☠', "One job failed but NOT due to the timeout."];
     }
 
-    return "{+@failed} builds failed. "
+    my $ans = "{+@failed} builds failed. "
         ~ (
             @timeout == @failed ?? "All"
                 !! @timeout == 0 ?? "NONE" !! "ONLY {+@timeout}"
         ) ~ " due to the timeout";
+    return [ $ans ~~ /All/ ?? '✓' !! '☠', $ans ];
 }
