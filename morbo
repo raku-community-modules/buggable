@@ -1,3 +1,0 @@
-#!/bin/sh
-morbo -l='http://*:4001' -w assets -w templates -w lib5 bin/web.pl
-

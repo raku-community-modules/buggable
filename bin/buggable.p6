@@ -12,7 +12,7 @@ use Buggable::Plugin::RT;
 
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
-        "\x[2]rt\x[2] | \x[2]rt TAG\x[2]";
+        "\x[2]tags\x[2] | \x[2]tag SOMETAG\x[2]";
     }
     multi method irc-to-me ($ where /^\s* source \s*$/) {
         "See: https://github.com/zoffixznet/perl6-buggable";
@@ -30,8 +30,5 @@ class Buggable::Info {
     :plugins(
         Buggable::Info.new,
         Buggable::Plugin::TravisWatcher.new,
-        Buggable::Plugin::RT.new(
-            db-file    => conf<db-file>,
-            report-dir => conf<rt-report-file-dir>,
-        ),
+        Buggable::Plugin::RT.new,
     );

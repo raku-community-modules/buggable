@@ -1,3 +1,3 @@
 #!/bin/sh
-BUGGABLE_R6_HOST=localhost BUGGABLE_IRC_HOST=localhost BUGGABLE_DEBUG=1 perl6 bin/buggable.p6
+BUGGABLE_R6_HOST=http://localhost:4000/ BUGGABLE_IRC_HOST=localhost BUGGABLE_DEBUG=1 perl6 bin/buggable.p6
 
