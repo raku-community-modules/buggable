@@ -6,7 +6,7 @@ method irc-privmsg-channel (
     $e where /^ 'https://travis-ci.org/rakudo/rakudo/builds/' $<id>=\d+/
 ) {
     my $result = self!process: ~$<id> or return;
-    $.irc.send: :where($e.channel), :text("$result[0] [travis build above] $result[1]");
+    $.irc.send: :where($e.channel), :text($result);
 }
 
 method !process ($build-id) {
@@ -20,33 +20,47 @@ method !process ($build-id) {
     say "TravisWatcher: got {+@failed} builds [@failed.join(', ')]";
     return unless @failed;
 
-    my @timeout;
+    my $state = class {
+        has int $.total         = +@failed;
+        has int $.timeout is rw = 0;
+        has int $.no-log  is rw = 0;
+        has int $.github  is rw = 0;
+        method Str {
+            $!timeout + $!no-log + $!github != $!total
+                ?? "☠ Did not recognize some failures. Check results manually"
+                !! "✓ All $!total failures are due to timeout ($!timeout), "
+                    ~ "missing build log ($!no-log), or GitHub failures ($!github)";
+        }
+    }.new;
+
     for @failed -> $id {
-        say "Fetching job $id";
         my $job = ua-get-json 'https://api.travis-ci.org/jobs/' ~ $id;
-        say "Fetched job $id";
+        unless $job<log> {
+            $state.no-log++;
+            next;
+        }
 
-        return ['☢', "Build log missing from at least one job."
-            ~ " Check results manually."] unless $job<log>;
+        $state.timeout++ if $job<log>.lc ~~ m/
+            "no output has been received in the last 10m0s, this"
+            " potentially indicates a stalled build or something wrong"
+            " with the build itself."
+            <ws>
+            [
+                "Check the details on how to adjust your build"
+                " configuration on: https://docs.travis-ci.com/user"
+                "/common-build-problems/#Build-times-out-because-no-"
+                "output-was-received"
+                <ws>
+            ]?
+            "the build has been terminated\n\n"
+            \s*
+        $/;
 
-        @timeout.push: $id
-            if $job<log>.lc ~~ m/
-                "no output has been received in the last 10m0s, this"
-                " potentially indicates a stalled build or something wrong"
-                " with the build itself.\n\nthe build has been terminated\n\n"
-            \s* $/;
+        $state.github++ if $job<log>.lc ~~ m/
+            "git error: fatal: unable to access"
+            \N+ "Server aborted the SSL handshake"
+        /;
     }
 
-    if @failed == 1 {
-        return @timeout == @failed
-            ?? ['✓', "One job failed due to the timeout. No other failures."]
-            !! ['☠', "One job failed but NOT due to the timeout."];
-    }
-
-    my $ans = "{+@failed} builds failed. "
-        ~ (
-            @timeout == @failed ?? "All"
-                !! @timeout == 0 ?? "NONE" !! "ONLY {+@timeout}"
-        ) ~ " due to the timeout";
-    return [ $ans ~~ /All/ ?? '✓' !! '☠', $ans ];
+    return "[travis build above] $state";
 }
