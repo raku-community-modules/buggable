@@ -5,7 +5,9 @@ use URI::Escape;
 has $.r6-url = %*ENV<BUGGABLE_R6_HOST> || 'https://perl6.fail/';
 
 multi method irc-to-me ($e where /:i ^ 'tag' s? $ /) {
-    my $res = ua-get-json "$!r6-url.json" or return 'Error accessing R6 API';
+    my $res = try { ua-get-json "$!r6-url.json"
+    } or return 'Error accessing R6 API';
+
     return join '; ',
         "\x[2]Total: $res<total>\x[2]",
         $res<tags>.map({"\x[2]$_<tag>:\x[2] $_<count>"}),
@@ -13,11 +15,14 @@ multi method irc-to-me ($e where /:i ^ 'tag' s? $ /) {
 }
 
 multi method irc-to-me ($e where /:i ^ 'tag' s? \s+ $<tag>=(\S.*)/) {
-    my $res = ua-get-json $!r6-url ~ 't/' ~ uri-escape(~$<tag>) ~ '.json'
-        or return 'Error accessing R6 API';
+    my $res = try {ua-get-json $!r6-url ~ 't/' ~ uri-escape(~$<tag>) ~ '.json'
+    } or return 'Error accessing R6 API';
 
-    return "There are no tickets tagged with $res<tag>" unless $res<total>;
-    return 'There '
-        ~ ($res<total> == 1  ?? 'is 1 ticket' !! "are $res<total> tickets")
-        ~ " tagged with $res<tag>; See $res<url> for details";
+    return "There are \x[2]no tickets\x[2] tagged with \x[2]$res<tag>\x[2]"
+        unless $res<total>;
+
+    return 'There ' ~ (
+        $res<total> == 1
+            ?? "is \x[2]1 ticket\x[2]" !! "are \x[2]$res<total> tickets\x[2]"
+    ) ~ " tagged with \x[2]$res<tag>\x[2]; See $res<url> for details";
 }
