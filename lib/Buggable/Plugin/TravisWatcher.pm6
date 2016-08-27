@@ -28,8 +28,8 @@ method !process ($build-id) {
         method Str {
             $!timeout + $!no-log + $!github != $!total
                 ?? "☠ Did not recognize some failures. Check results manually"
-                !! "✓ All $!total failures are due to timeout ($!timeout), "
-                    ~ "missing build log ($!no-log), or GitHub failures ($!github)";
+                !! "✓ All failures are due to timeout ($!timeout), missing"
+                    ~ " build log ($!no-log), or GitHub connectivity ($!github)";
         }
     }.new;
 
