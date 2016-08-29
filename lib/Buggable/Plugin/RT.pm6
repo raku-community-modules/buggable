@@ -2,7 +2,7 @@ unit class Buggable::Plugin::RT;
 use Buggable::UA;
 use URI::Escape;
 
-has $.r6-url = %*ENV<BUGGABLE_R6_HOST> || 'https://perl6.fail/';
+has $.r6-url = %*ENV<BUGGABLE_R6_HOST> || 'http://perl6.fail/';
 
 multi method irc-to-me ($e where /:i ^ 'tag' s? $ /) {
     my $res = try { ua-get-json "$!r6-url.json"
