@@ -46,10 +46,10 @@ method !process ($build-id) {
             " with the build itself."
             <ws>
             [
-                "Check the details on how to adjust your build"
+                "check the details on how to adjust your build"
                 " configuration on: https://docs.travis-ci.com/user"
-                "/common-build-problems/#Build-times-out-because-no-"
-                "output-was-received"
+                "/common-build-problems/#build-times-out-because-no-"
+                "output-was-received\n\n"
                 <ws>
             ]?
             "the build has been terminated\n\n"
