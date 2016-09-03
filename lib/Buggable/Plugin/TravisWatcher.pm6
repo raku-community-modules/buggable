@@ -58,7 +58,6 @@ method !process ($build-id) {
 
         $state.github++ if $job<log>.lc ~~ m/
             "git error: fatal: unable to access"
-            \N+ "server aborted the ssl handshake"
         /;
     }
 
