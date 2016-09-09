@@ -4,7 +4,7 @@ use URI::Escape;
 
 has $.r6-url = %*ENV<BUGGABLE_R6_HOST> || 'http://perl6.fail/';
 
-multi method irc-to-me ($e where /:i ^ 'tag' s? $ /) {
+multi method irc-to-me ($e where /:i ^ [tag|rt|bug] s? '?'? $ /) {
     my $res = try { ua-get-json "$!r6-url.json"
     } or return 'Error accessing R6 API';
 
@@ -14,7 +14,7 @@ multi method irc-to-me ($e where /:i ^ 'tag' s? $ /) {
         "See $res<url> for details";
 }
 
-multi method irc-to-me ($e where /:i ^ 'tag' s? \s+ $<tag>=(\S.*)/) {
+multi method irc-to-me ($e where /:i ^ [tag|rt|bug] s? '?'? \s+ $<tag>=(\S.*)/) {
     my $res = try {ua-get-json $!r6-url ~ 't/' ~ uri-escape(~$<tag>) ~ '.json'
     } or return 'Error accessing R6 API';
 
