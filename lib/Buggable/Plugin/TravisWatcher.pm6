@@ -15,7 +15,7 @@ method !process ($build-id) {
         'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $build-id;
 
     my @failed = $build<matrix>.grep({
-        .<result> ~~ Any:U or .<result> != 0
+        (.<result> ~~ Any:U or .<result> != 0) and not .<allow_failure>
     }).map: *.<id>;
     say "TravisWatcher: got {+@failed} builds [@failed.join(', ')]";
     return unless @failed;
