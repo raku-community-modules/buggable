@@ -15,26 +15,33 @@ method !process ($build-id) {
         'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $build-id;
 
     my @failed = $build<matrix>.grep({
-        (.<result> ~~ Any:U or .<result> != 0) and not .<allow_failure>
+    not (    (.<result> ~~ Any:U or .<result> != 0) and not .<allow_failure> )
     }).map: *.<id>;
     say "TravisWatcher: got {+@failed} builds [@failed.join(', ')]";
     return unless @failed;
 
     my $state = class {
         has int $.total         = +@failed;
-        has int $.timeout is rw = 0;
-        has int $.no-log  is rw = 0;
-        has int $.github  is rw = 0;
+        has int $.timeout  is rw = 0;
+        has int $.no-log   is rw = 0;
+        has int $.github   is rw = 0;
+        has int $.jvm-only is rw = 0;
         method Str {
-            $!timeout + $!no-log + $!github != $!total
-                ?? "☠ Did not recognize some failures. Check results manually"
+            ( $!timeout + $!no-log + $!github != $!total
+                ?? "☠ Did not recognize some failures. Check results manually."
                 !! "✓ All failures are due to timeout ($!timeout), missing"
-                    ~ " build log ($!no-log), or GitHub connectivity ($!github)";
+                    ~ " build log ($!no-log), or GitHub connectivity "
+                    ~ "($!github)."
+            ) ~ ( " All failures are on JVM only" if $!jvm-only );
         }
     }.new;
 
+    my int $num-jvm-fails = 0;
     for @failed -> $id {
+        say "Processing Job ID $id";
         my $job = ua-get-json 'https://api.travis-ci.org/jobs/' ~ $id;
+        say "Done!";
+        $num-jvm-fails++ if $job<config><env>.?contains: '--backends=jvm';
         unless $job<log> {
             $state.no-log++;
             next;
@@ -63,6 +70,7 @@ method !process ($build-id) {
             ]
         /;
     }
+    $state.jvm-only = 1 if $num-jvm-fails == @failed;
 
     return "[travis build above] $state";
 }
