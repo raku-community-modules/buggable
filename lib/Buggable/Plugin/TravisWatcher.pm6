@@ -15,7 +15,7 @@ method !process ($build-id) {
         'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $build-id;
 
     my @failed = $build<matrix>.grep({
-    not (    (.<result> ~~ Any:U or .<result> != 0) and not .<allow_failure> )
+        (.<result> ~~ Any:U or .<result> != 0) and not .<allow_failure>
     }).map: *.<id>;
     say "TravisWatcher: got {+@failed} builds [@failed.join(', ')]";
     return unless @failed;
@@ -32,7 +32,7 @@ method !process ($build-id) {
                 !! "✓ All failures are due to timeout ($!timeout), missing"
                     ~ " build log ($!no-log), or GitHub connectivity "
                     ~ "($!github)."
-            ) ~ ( " All failures are on JVM only" if $!jvm-only );
+            ) ~ ( " All failures are on JVM only." if $!jvm-only );
         }
     }.new;
 
