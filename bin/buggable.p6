@@ -9,6 +9,7 @@ use IRC::Client;
 use Buggable::Config;
 use Buggable::Plugin::TravisWatcher;
 use Buggable::Plugin::RT;
+use Buggable::Plugin::Eco;
 
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
@@ -33,4 +34,5 @@ class Buggable::Info {
         Buggable::Info.new,
         Buggable::Plugin::TravisWatcher.new,
         Buggable::Plugin::RT.new,
+        Buggable::Plugin::Eco.new,
     );
