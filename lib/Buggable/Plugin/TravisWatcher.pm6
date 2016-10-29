@@ -67,7 +67,7 @@ method !process ($build-id) {
             [
                   "git error: fatal: unable to access"
                 | "git error: error: rpc failed"
-                | 'The command "git fetch origin +refs/pull/' \d+ '/merge:" failed and exited with 128 during .'
+                | 'the command "git fetch origin +refs/pull/' \d+ '/merge:" failed and exited with 128 during .'
             ]
         /;
     }
