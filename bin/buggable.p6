@@ -10,10 +10,11 @@ use Buggable::Config;
 use Buggable::Plugin::TravisWatcher;
 use Buggable::Plugin::RT;
 use Buggable::Plugin::Eco;
+use Buggable::Plugin::Speed;
 
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
-        "\x[2]tags\x[2] | \x[2]tag SOMETAG\x[2]";
+        "\x[2]tags\x[2] | \x[2]tag SOMETAG\x[2] | \x[2]eco\x[2] | \x[2]speed\x[2]";
     }
     multi method irc-to-me ($ where /^\s* source \s*$/) {
         "See: https://github.com/zoffixznet/perl6-buggable";
@@ -35,4 +36,5 @@ class Buggable::Info {
         Buggable::Plugin::TravisWatcher.new,
         Buggable::Plugin::RT.new,
         Buggable::Plugin::Eco.new,
+        Buggable::Plugin::Speed.new,
     );
