@@ -25,11 +25,12 @@ class Buggable::Info {
 
 .run with IRC::Client.new:
     :nick<buggable>,
+    :username<zofbot-buggable>,
     :host(%*ENV<BUGGABLE_IRC_HOST> // 'irc.freenode.net'),
     :channels( %*ENV<BUGGABLE_DEBUG> ?? '#zofbot' !! |<#perl6  #perl6-dev  #zofbot>),
-    |(:password(conf<irc-pass>)
-        if conf<irc-pass> and not %*ENV<BUGGABLE_DEBUG>
-    ),
+#    |(:password(conf<irc-pass>)
+ #       if conf<irc-pass> and not %*ENV<BUGGABLE_DEBUG>
+  #  ),
     :debug,
     :plugins(
         Buggable::Info.new,
