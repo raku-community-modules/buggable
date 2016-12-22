@@ -1,10 +1,13 @@
 unit class Buggable::Plugin::Eco;
 use HTTP::UserAgent;
+use URI::Escape;
+use JSON::Fast;
 
-has $.log-url = 'https://modules.perl6.org/update.log';
+has $.log-url    = 'https://modules.perl6.org/update.log';
+has $.search-url = 'https://modules.perl6.org/s/';
 
 multi method irc-to-me (
-    $e where /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? $ /
+    $e where /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s* $ /
 ) {
     my $res = HTTP::UserAgent.new.get: $!log-url;
     return 'Error accessing Ecosystem build log: ' ~ $res.status-line
@@ -22,4 +25,30 @@ multi method irc-to-me (
 
     return "Out of {+@dists} Ecosystem dists, $dists-warning have warnings "
         ~ "and $dists-error have errors. See $!log-url for details";
+}
+
+multi method irc-to-me ( $e where
+    /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s+ $<term>=.+ \s* $/
+) {
+    my $url = $.search-url ~ uri-escape(~$<term>) ~ '.json';
+    my $res = HTTP::UserAgent.new.get: $url;
+    return 'Error accessing modules.perl6.org: ' ~ $res.status-line
+        unless $res.is-success;
+
+    my @dists = |(try { from-json $res.content } //
+        return "Failed to decode result JSON: $!")<dists>;
+
+    if @dists == 1 {
+        my $dist = @dists[0];
+        return "\x[2]$dist<name>\x[2] '$dist<description>': $dist<url>";
+    }
+    elsif @dists {
+        @dists = @dists[lazy ^5];
+        return "Found {+@dists} results: @dists.map(*.<name>).join(', ')"
+            ~ (", and others" if @dists > 5)
+            ~ ". See $url";
+    }
+    else {
+        return "Nothing found";
+    }
 }
