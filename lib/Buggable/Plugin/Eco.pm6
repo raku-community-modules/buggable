@@ -5,6 +5,7 @@ use JSON::Fast;
 
 has $.log-url    = 'https://modules.perl6.org/update.log';
 has $.search-url = 'https://modules.perl6.org/s/';
+has $.search-url-human = 'http://modules.perl6.org/#q=';
 
 multi method irc-to-me (
     $e where /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s* $ /
@@ -30,8 +31,9 @@ multi method irc-to-me (
 multi method irc-to-me ( $e where
     /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s+ $<term>=.+ \s* $/
 ) {
-    my $url = $.search-url ~ uri-escape(~$<term>);
-    my $res = HTTP::UserAgent.new.get: $url ~ '.json';
+    my $res = HTTP::UserAgent.new.get:
+        $.search-url ~ uri-escape(~$<term>) ~ '.json';
+
     return 'Error accessing modules.perl6.org: ' ~ $res.status-line
         unless $res.is-success;
 
@@ -47,7 +49,7 @@ multi method irc-to-me ( $e where
         return "Found \x[2]{+@dists}\x[2] results: "
             ~ @dists.map({"\x[2]{.<name>}\x[2]"}).join(', ')
             ~ (", and others" if @dists > 5)
-            ~ ". See $url";
+            ~ ". See " ~ $.search-url-human ~ uri-escape(~$<term>);
     }
     else {
         return "Nothing found";
