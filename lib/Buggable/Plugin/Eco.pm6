@@ -30,8 +30,8 @@ multi method irc-to-me (
 multi method irc-to-me ( $e where
     /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s+ $<term>=.+ \s* $/
 ) {
-    my $url = $.search-url ~ uri-escape(~$<term>) ~ '.json';
-    my $res = HTTP::UserAgent.new.get: $url;
+    my $url = $.search-url ~ uri-escape(~$<term>);
+    my $res = HTTP::UserAgent.new.get: $url ~ '.json';
     return 'Error accessing modules.perl6.org: ' ~ $res.status-line
         unless $res.is-success;
 
@@ -44,7 +44,8 @@ multi method irc-to-me ( $e where
     }
     elsif @dists {
         @dists = @dists[lazy ^5];
-        return "Found {+@dists} results: @dists.map(*.<name>).join(', ')"
+        return "Found \x[2]{+@dists}\x[2] results: "
+            ~ @dists.map({"\x[2]{.<name>}\x[2]"}).join(', ')
             ~ (", and others" if @dists > 5)
             ~ ". See $url";
     }
