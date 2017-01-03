@@ -20,5 +20,5 @@ multi method irc-to-me (
     my $spark = @recent.map({
         @bar[(($_ - $min) / $range * (@bar - 1)).round]
     }).join;
-    return $spark ~ " data for $date-range; variance: {$min}s–{$min + $range}s";
+    return $spark ~ " data for $date-range; range: {$min}s–{$min + $range}s";
 }
