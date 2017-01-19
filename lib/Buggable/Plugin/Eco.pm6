@@ -45,8 +45,9 @@ multi method irc-to-me ( $e where
         return "\x[2]$dist<name>\x[2] '$dist<description>': $dist<url>";
     }
     elsif @dists {
+        my $total = +@dists;
         @dists = @dists[lazy ^5];
-        return "Found \x[2]{+@dists}\x[2] results: "
+        return "Found \x[2]$total\x[2] results: "
             ~ @dists.map({"\x[2]{.<name>}\x[2]"}).join(', ')
             ~ (", and others" if @dists > 5)
             ~ ". See " ~ $.search-url-human ~ uri-escape(~$<term>);
