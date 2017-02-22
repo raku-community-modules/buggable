@@ -5,7 +5,7 @@ use JSON::Fast;
 
 has $.log-url    = 'https://modules.perl6.org/update.log';
 has $.search-url = 'https://modules.perl6.org/s/';
-has $.search-url-human = 'http://modules.perl6.org/#q=';
+has $.search-url-human = 'https://modules.perl6.org/#q=';
 
 multi method irc-to-me (
     $e where /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s* $ /
