@@ -14,6 +14,7 @@ multi method irc-to-me (
     my @recent = $res.content.lines[(*-50)..Inf];
     my $date-range = @recent.map(*.words[0])[0,*-1].join: '–';
     @recent .= map(*.words[*-1]);
+    @recent .= grep: * ne '999.999'; # filter out bogus results
     my ($min, $max) = @recent.min, @recent.max;
     my $range = max($max - $min, .1 * $min, .25);
     my @bar = (^8 + 0x2581)>>.chr;
