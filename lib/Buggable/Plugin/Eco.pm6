@@ -36,7 +36,7 @@ multi method irc-to-me ( $e where
     /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s+ $<term>=.+ \s* $/
 ) {
     my $res = HTTP::UserAgent.new.get:
-        $.search-url ~ uri-escape(~$<term>) ~ '.json';
+        $.search-url ~ uri-escape(~$<term>) ~ '/.json';
 
     return 'Error accessing modules.perl6.org: ' ~ $res.status-line
         unless $res.is-success;
