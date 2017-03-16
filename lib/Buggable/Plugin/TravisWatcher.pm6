@@ -26,13 +26,20 @@ method !process ($build-id) {
         has int $.no-log   is rw = 0;
         has int $.github   is rw = 0;
         has int $.jvm-only is rw = 0;
+        has int $.test-fail is rw = 0;
+        has @.failures;
         method Str {
             ( $!timeout + $!no-log + $!github != $!total
                 ?? "☠ Did not recognize some failures. Check results manually."
                 !! "✓ All failures are due to timeout ($!timeout), missing"
                     ~ " build log ($!no-log), or GitHub connectivity "
                     ~ "($!github)."
-            ) ~ ( " All failures are on JVM only." if $!jvm-only );
+            ) ~ ( " All failures are on JVM only." if $!jvm-only )
+            ~   ( if $!test-fail {
+                    $!test-fail == 1 ?? " Failed @!failures[0]"
+                                     !!" Failed {self.test-fail} test(s)"
+              } )
+
         }
     }.new;
 
@@ -70,6 +77,10 @@ method !process ($build-id) {
                 | 'the command "git fetch origin +refs/pull/' \d+ '/merge:" failed and exited with 128 during .'
             ]
         /;
+        if $job<log> ~~ m/ ^ "t/"( \d+ \S+ ".t") \s* '.'+ \s* "Failed" / {
+            $state.test-fail++;
+            $state.failures.push(~$0);            
+        }
     }
     $state.jvm-only = 1 if $num-jvm-fails == @failed;
 
