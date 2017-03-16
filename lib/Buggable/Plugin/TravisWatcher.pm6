@@ -21,27 +21,30 @@ method !process ($build-id) {
     return unless @failed;
 
     my $state = class {
-        has int $.total         = +@failed;
+        has int $.total;
         has int $.timeout  is rw = 0;
         has int $.no-log   is rw = 0;
         has int $.github   is rw = 0;
         has int $.jvm-only is rw = 0;
-        has int $.test-fail is rw = 0;
-        has @.failures;
+        has int $.jobs-with-test-fail is rw = 0;
+        has SetHash $.failed-test-files = SetHash.new;
         method Str {
-            ( $!timeout + $!no-log + $!github != $!total
+            ( $!timeout + $!no-log + $!github + $!jobs-with-test-fail != $!total
                 ?? "☠ Did not recognize some failures. Check results manually."
                 !! "✓ All failures are due to timeout ($!timeout), missing"
-                    ~ " build log ($!no-log), or GitHub connectivity "
-                    ~ "($!github)."
-            ) ~ ( " All failures are on JVM only." if $!jvm-only )
-            ~   ( if $!test-fail {
-                    $!test-fail == 1 ?? " Failed @!failures[0]"
-                                     !!" Failed {self.test-fail} test(s)"
-              } )
-
+                    ~ " build log ($!no-log), GitHub connectivity "
+                    ~ "($!github), or failed make test ($!jobs-with-test-fail)."
+            )
+            ~ ( if $.failed-test-files.keys -> $k {
+                " Across all jobs, " ~ (
+                    $k > 1 ?? "{+$k} unique test files failed."
+                           !! "only $k[0] test file failed."
+                    )
+                }
+            )
+            ~ ( " All failures are on JVM only." if $!jvm-only )
         }
-    }.new;
+    }.new: :total(+@failed);
 
     my int $num-jvm-fails = 0;
     for @failed -> $id {
@@ -77,9 +80,10 @@ method !process ($build-id) {
                 | 'the command "git fetch origin +refs/pull/' \d+ '/merge:" failed and exited with 128 during .'
             ]
         /;
-        if $job<log> ~~ m/ ^ "t/"( \d+ \S+ ".t") \s* '.'+ \s* "Failed" / {
-            $state.test-fail++;
-            $state.failures.push(~$0);            
+
+        for $job<log> ~~ m:g/^^ "t/"( \d+ \N+? ".t") \s* "."+ \s* "Failed"/ {
+            once $state.jobs-with-test-fail++;
+            $state.failed-test-files{~.[0]}++;
         }
     }
     $state.jvm-only = 1 if $num-jvm-fails == @failed;
