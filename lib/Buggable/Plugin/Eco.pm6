@@ -1,7 +1,7 @@
 unit class Buggable::Plugin::Eco;
 use HTTP::UserAgent;
 use URI::Escape;
-use JSON::Fast;
+use JSON::Tiny;
 
 has $.log-url    = 'https://modules.perl6.org/update.log';
 has $.search-url = 'https://modules.perl6.org/s/';

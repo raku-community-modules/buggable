@@ -1,6 +1,6 @@
 unit class Buggable::UA;
 
-use JSON::Fast;
+use JSON::Tiny;
 use HTTP::UserAgent;
 
 sub ua-get-json ($url) is export {
