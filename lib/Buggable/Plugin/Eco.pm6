@@ -21,10 +21,15 @@ multi method irc-to-me (
     say @dists[0];
     for @dists {
         $dists-error++   if .contains: '[error]';
-        $dists-warning++ if .contains: '[warn]'
-            and not .contains: 'does not have any tags';
-        $dists-no-tags++ if .contains: '[warn]'
-            and     .contains: 'does not have any tags';
+        my ($seen-warning, $seen-missing-tag) = False, False;
+        for .lines {
+            next unless .contains: '[warn]';
+            .contains: 'does not have any tags'
+                ?? $seen-missing-tag = True
+                !! $seen-warning     = True
+        }
+        $dists-warning++ if $seen-warning;
+        $dists-no-tags++ if $seen-missing-tag;
     }
 
     return "Out of {+@dists} Ecosystem dists, $dists-warning have warnings,"
