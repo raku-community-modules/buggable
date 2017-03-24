@@ -25,8 +25,8 @@ multi method irc-to-me (
         for .lines {
             next unless .contains: '[warn]';
             .contains: 'does not have any tags'
-                ?? $seen-missing-tag = True
-                !! $seen-warning     = True
+                ?? $seen-missing-tag++
+                !! $seen-warning++;
         }
         $dists-warning++ if $seen-warning;
         $dists-no-tags++ if $seen-missing-tag;
