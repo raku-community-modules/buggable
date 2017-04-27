@@ -99,7 +99,10 @@ multi method irc-to-me ( $e where
     or return "Did not find any dists for $author";
 
     my $file = substr rand ~ time ~ ".html", 2;
-    TEMP-DIR.add($file).spurt: @metas.map({
+    TEMP-DIR.add($file).spurt: "
+        <style>body \{ width: 500px; margin: 20px auto; };
+        a \{ line-height: 1.9em } </style>
+    " ~ @metas.map({
         my $url = .<github>
           ?? "https://github.com/{.<author>}/{.<repo>}/tree/{.<branch>}"
           !! .<gitlab>
@@ -108,5 +111,5 @@ multi method irc-to-me ( $e where
         qq|<a href="$url">{.<repo>}</a>|
     }).join("\n<br>");
 
-    "Found {+@meta} dists for $author. See " ~ TEMP-DIR-URL ~ $file
+    "Found {+@metas} dists for $author. See " ~ TEMP-DIR-URL ~ $file
 }
