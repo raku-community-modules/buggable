@@ -1,6 +1,5 @@
 unit class Buggable::Plugin::Eco;
 use HTTP::UserAgent;
-use Pastebin::Gist;
 use URI::Escape;
 use JSON::Tiny;
 
