@@ -34,8 +34,9 @@ sub make-spark ($items = 50) {
     my $range = max($max - $min, .1 * $min, .25);
     my @bar = (^8 + 0x2581)>>.chr;
     my $spark = @recent.map({
-        $_ < $min ?? '↓' !!
-        $_ > $max ?? '↑' !! @bar[(($_ - $min) / $range * (@bar - 1)).round];
+        $_ < $min          ?? '↓' !!
+        $_ > $min + $range ?? '↑' !!
+                              @bar[(($_ - $min) / $range * (@bar - 1)).round];
     }).join;
 
     $spark ~ " data for $date-range; range: %stats<min>s–%stats<max>s"
