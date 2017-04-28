@@ -26,15 +26,31 @@ sub make-spark ($items = 50) {
     my $date-range = @recent.map(*.words[0])[0,*-1].join: '–';
     @recent .= map(*.words[*-1]);
     @recent .= grep: * ne '999.999'; # filter out bogus results
-    my ($min, $max) = @recent.min, @recent.max;
+    my %stats := simple-stats(@recent);
+    my $close =    %stats<mean> - 2 * %stats<stddev>
+                .. %stats<mean> + 2 * %stats<stddev>;
+    my @close = @recent.grep($close);
+    my ($min, $max) = @close.min, @close.max;
     my $range = max($max - $min, .1 * $min, .25);
     my @bar = (^8 + 0x2581)>>.chr;
     my $spark = @recent.map({
-        @bar[(($_ - $min) / $range * (@bar - 1)).round]
+        $_ < $min          ?? '↓' !!
+        $_ > $min + $range ?? '↑' !!
+                              @bar[(($_ - $min) / $range * (@bar - 1)).round];
     }).join;
 
-    $spark ~ " data for $date-range; range: {$min}s–{$max}s"
+    $spark ~ " data for $date-range; range: %stats<min>s–%stats<max>s"
         ~ speed-diff @recent.head, @recent.tail
+}
+
+sub simple-stats (@data) {
+    my $min      =  @data.min;
+    my $max      =  @data.max;
+    my $mean     = +@data R/ [+] @data;
+    my $variance = +@data R/ [+] @data.map: (* - $mean)²;
+    my $stddev   = $variance.sqrt;
+
+    %( :$min, :$max, :$mean, :$variance, :$stddev )
 }
 
 sub speed-diff ($before, $after) {
