@@ -1,17 +1,20 @@
+use IRC::Client;
 unit class Buggable::Plugin::Win does IRC::Client::Plugin;
-use Number::Denominal;
+use Number::Denominate;
 use IRC::TextColor;
 
 has IO::Path $.db where .rw;
 has DateTime $.when;
 
-sub B { ircstyle :bold, $^text }
+my @channels = <#zofbot>; # <#perl6 #perl6-dev #zofbot #moarvm>;
+
+sub B { ircstyle :bold, ~$^text }
 sub prize { B ('roll of duck tape', 'can of WD40').pick }
 
 method irc-started { self!do-draw: :init-only }
 
 multi method irc-privmsg-channel (
-    $e where /:i ^ \s* ['/w' | '/win' | 'win'] \s+ $<number>=\d+ $ /
+    $e where /:i ^ \s* ['/w' | '/win' | 'win'] \s* $<number>=\d+ $ /
 ) {
     $.db.spurt: :append, "$e.nick()\n$<number>\n";
     "Thank you for entering &B("Accidental /win Lottery")! "
@@ -21,29 +24,31 @@ multi method irc-privmsg-channel (
 multi method irc-to-me (
     $ where .host eq 'perl6.party' && /^\s* fake \s* draw \s* $/
 ) {
-    self!do-draw: :$no-promise;
+    self!do-draw: :no-promise;
+    Nil
 }
 
 multi method irc-to-me ( $ where /:i ^\s* 'draw' 'status'? '?'? \s* $/ ) {
     my ($, $b, $u) = self!ballots;
     "The next &B("Accidental /win Lottery") draw will happen "
-      ~ "in {self!draw-when: :human}. Currently have"
+      ~ "in {self!draw-when: :human}. Currently have "
       ~ "&B($b) ballots submitted by &B($u) users!"
 }
 
 method !do-draw (:$init-only, :$no-promise) {
     unless $init-only {
-        my (%ballots, $b, $u) = self!ballots;
-        my $text = "🎺🎺🎺 It's time for the monthly"
+        my (%ballots, $b, $u) := self!ballots;
+        my $text = "🎺🎺🎺 It's time for the monthly "
           ~ "&B('Accidental /win Lottery') 😍😍😍 We have "
-          ~ "&B($b) ballots submitted by &B($u) users! And the winner is...";
-        $.irc.send: :$where :text($_) for <#perl6 #perl6-dev #zofbot #moarvm>;
+          ~ "&B($b) ballots submitted by &B($u) users! DRUM ROLL PLEASE!...";
+        $.irc.send: :where($_), :$text for @channels;
         sleep 3;
 
-        my $winning-number = %ballots.keys.pick;
+        my $winning-number = %ballots.keys ?? %ballots.keys.pick !! 42;
+        my $winner = %ballots{$winning-number}.join(',') || 'Zoffix';
         $text = "And the winning number is &B($winning-number)! Congratulations"
-          ~ " to &B(%ballots{$winning-number}.join(','))! You win a &prize()!";
-        $.irc.send: :$where :text($_) for <#perl6 #perl6-dev #zofbot #moarvm>;
+          ~ " to &B($winner)! You win a &prize()!";
+        $.irc.send: :where($_), :$text for @channels;
     }
 
     unless $no-promise {
@@ -59,7 +64,7 @@ method !do-draw (:$init-only, :$no-promise) {
 method !ballots {
     my %ballots.push: $.db.lines.pairup».antipair;
     # ballots; number of ballots; number of users;
-    (%ballots, +%ballots.keys, +%ballots.values».List.flat.unique)
+    ($_, .map(*.value.elems).sum, +.values».List.flat.unique) with %ballots
 }
 
 method !draw-when (:$human) {

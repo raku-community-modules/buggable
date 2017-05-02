@@ -2,3 +2,4 @@
 lib/.precomp
 config.json
 tickets.sqlite.db
+win-lottery.db
