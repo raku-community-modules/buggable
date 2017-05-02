@@ -11,6 +11,7 @@ use Buggable::Plugin::TravisWatcher;
 use Buggable::Plugin::RT;
 use Buggable::Plugin::Eco;
 use Buggable::Plugin::Speed;
+use Buggable::Plugin::Win;
 
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
@@ -39,4 +40,5 @@ class Buggable::Info {
         Buggable::Plugin::RT.new,
         Buggable::Plugin::Eco.new,
         Buggable::Plugin::Speed.new,
+        Buggable::Plugin::Win.new(db => conf<win-db-file>.IO),
     );
