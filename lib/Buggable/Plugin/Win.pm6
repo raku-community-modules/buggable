@@ -6,7 +6,7 @@ use IRC::TextColor;
 has IO::Path $.db where .rw;
 has DateTime $.when;
 
-my @channels = <#zofbot>; # <#perl6 #perl6-dev #zofbot #moarvm>;
+my @channels = <#perl6 #perl6-dev #zofbot #moarvm>;
 
 sub B { ircstyle :bold, ~$^text }
 sub prize { B ('roll of duck tape', 'can of WD40').pick }
@@ -45,7 +45,7 @@ method !do-draw (:$init-only, :$no-promise) {
         sleep 3;
 
         my $winning-number = %ballots.keys ?? %ballots.keys.pick !! 42;
-        my $winner = %ballots{$winning-number}.join(',') || 'Zoffix';
+        my $winner = %ballots{$winning-number}.join(', ') || 'Zoffix';
         $text = "And the winning number is &B($winning-number)! Congratulations"
           ~ " to &B($winner)! You win a &prize()!";
         $.irc.send: :where($_), :$text for @channels;
