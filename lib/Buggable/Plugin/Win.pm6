@@ -53,7 +53,7 @@ method !do-draw (:$init-only, :$no-promise) {
 
     unless $no-promise {
         # Reset the lottery
-        $.db.spurt: '';
+        $.db.spurt: '' unless $init-only;
         $!when = DateTime.now.later(:month).clone:
             :0hour, :0minute, :0second, :0timezone;
         Promise.in(self!draw-when).then: { self!do-draw };
