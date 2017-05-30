@@ -1,9 +1,5 @@
 #!/usr/bin/env perl6
-use lib <
-    /home/zoffix/CPANPRC/IRC-Client/lib
-    /home/zoffix/services/lib/IRC-Client/lib
-    lib
->;
+use lib <lib>;
 
 use IRC::Client;
 use Buggable::Config;
@@ -40,5 +36,7 @@ class Buggable::Info {
         Buggable::Plugin::RT.new,
         Buggable::Plugin::Eco.new,
         Buggable::Plugin::Speed.new,
-        Buggable::Plugin::Win.new(db => conf<win-db-file>.IO),
+        Buggable::Plugin::Win.new(db => (
+          (conf<win-db-file> || die 'Win lottery database file is missing').IO
+        )),
     );

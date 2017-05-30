@@ -1,6 +1,6 @@
 use IRC::Client;
 unit class Buggable::Plugin::TravisWatcher does IRC::Client::Plugin;
-use Buggable::UA;
+use WWW;
 
 method irc-privmsg-channel (
     $e where /^ 'https://travis-ci.org/rakudo/rakudo/builds/' $<id>=\d+/
@@ -11,8 +11,9 @@ method irc-privmsg-channel (
 
 method !process ($build-id) {
     say 'TravisWatcher: fetching travis build info';
-    my $build = ua-get-json
-        'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $build-id;
+    my $build = jget
+        'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $build-id
+    orelse return 'Failed to fetch build data';
 
     my @failed = $build<matrix>.grep({
         (.<result> ~~ Any:U or .<result> != 0) and not .<allow_failure>
@@ -49,7 +50,8 @@ method !process ($build-id) {
     my int $num-jvm-fails = 0;
     for @failed -> $id {
         say "Processing Job ID $id";
-        my $job = ua-get-json 'https://api.travis-ci.org/jobs/' ~ $id;
+        my $job = jget 'https://api.travis-ci.org/jobs/' ~ $id
+            orelse return 'Failed to fetch data for job #' ~ $id;
         say "Done!";
         $num-jvm-fails++ if $job<config><env>.?contains: '--backends=jvm';
         unless $job<log> {

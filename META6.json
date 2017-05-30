@@ -1,13 +1,14 @@
 {
     "perl"         : "6.c",
     "name"         : "buggable",
-    "version"      : "1.001001",
+    "version"      : "1.001002",
     "description"  : "Helper bot for Perl 6 development",
     "depends"      : [
+        "Number::Denominate",
         "IRC::Client",
+        "URI::Escape",
         "JSON::Fast",
-        "HTTP::UserAgent",
-        "URI::Escape"
+        "WWW"
     ],
     "test-depends" : [
         "Test"

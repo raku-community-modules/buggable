@@ -1,5 +1,5 @@
 unit class Buggable::Plugin::Speed;
-use HTTP::UserAgent;
+use WWW;
 
 constant $log-url = 'http://tux.nl/Talks/CSV6/speed.log';
 
@@ -18,11 +18,8 @@ multi method irc-to-me (
 sub make-spark ($items = 50) {
     $items > 100 and return "Refusing to do more than 100 last entries";
 
-    my $res = HTTP::UserAgent.new.get: $log-url;
-    return 'Error accessing speed log: ' ~ $res.status-line
-        unless $res.is-success;
-
-    my @recent = $res.content.lines.tail: $items;
+    my $res = get $log-url orelse return 'Error accessing speed log';
+    my @recent = $res.lines.tail: $items;
     my $date-range = @recent.map(*.words[0])[0,*-1].join: '–';
     @recent .= map(*.words[*-1]);
     @recent .= grep: * ne '999.999'; # filter out bogus results

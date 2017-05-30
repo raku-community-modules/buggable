@@ -1,7 +1,6 @@
 unit class Buggable::Plugin::Eco;
-use HTTP::UserAgent;
+use WWW;
 use URI::Escape;
-use JSON::Tiny;
 
 constant META-LIST
 = 'https://raw.githubusercontent.com/perl6/ecosystem/master/META.list';
@@ -15,12 +14,9 @@ has $.search-url-human = MODULES-SITE ~ '/#q=';
 multi method irc-to-me (
     $e where /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s* $ /
 ) {
-    my $res = HTTP::UserAgent.new.get: $!log-url;
-    return 'Error accessing Ecosystem build log: ' ~ $res.status-line
-        unless $res.is-success;
-
+    my $res = get $!log-url orelse return 'Error accessing Ecosystem build log';
     say "Fetched build log";
-    my @dists = (split /'---'/, (split /"---\n---"/, $res.content, 2)[0])[1..*];
+    my @dists = (split /'---'/, (split /"---\n---"/, $res, 2)[0])[1..*];
     say "Finished splitting log into dists";
     my ($dists-error, $dists-warning, $dists-no-tags) = (0, 0, 0);
     say @dists[0];
@@ -46,14 +42,10 @@ multi method irc-to-me ( $e where
     /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s+ $<term>=.+ \s* $/
 ) {
     my $term = ~$<term>;
-    my $res = HTTP::UserAgent.new.get:
-        $.search-url ~ uri-escape($term) ~ '/.json';
-
-    return 'Error accessing modules.perl6.org: ' ~ $res.status-line
-        unless $res.is-success;
-
-    my @dists = |(try { from-json $res.content } //
-        return "Failed to decode result JSON: $!")<dists>;
+    my @dists = |(
+        jget $.search-url ~ uri-escape($term) ~ '/.json'
+            orelse return "Failed to decode result JSON: $!"
+    )<dists>;
 
     if @dists == 1 {
         my $dist = @dists[0];
@@ -81,11 +73,8 @@ multi method irc-to-me ( $e where
     /:i ^ [ 'author' 's'? ] '?'? \s+ $<name>=.+ \s* $/
 ) {
     my $author = ~$<name>;
-    my $res = HTTP::UserAgent.new.get: META-LIST;
-    return 'Error accessing ' ~ META-LIST ~ ': ' ~ $res.status-line
-        unless $res.is-success;
-
-    my @metas = $res.content.lines.map({
+    my $res = get META-LIST orelse return 'Error accessing ' ~ META-LIST;
+    my @metas = $res.lines.map({
         m{ # GitHub URL
           'https://raw.githubusercontent.com/'
           $<author>=<-[/]>+ '/' $<repo>=<-[/]>+ '/' $<branch>=<-[/]>+
