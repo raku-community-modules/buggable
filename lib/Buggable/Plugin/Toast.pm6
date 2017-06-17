@@ -11,5 +11,5 @@ multi method irc-to-me (
         ~ " \x[2]$res<burnt_num>\x[2] ($res<burnt>%) modules got burnt;"
         ~ " \x[2]$res<unsucced_num>\x[2] ($res<unsucced>%) got unsucced;"
         ~ " \x[2]$res<unusable_num>\x[2] ($res<unusable>%)"
-        ~ " out of \x[2]$res<total_num>\x[2] modules appear unusable."
+        ~ " out of \x[2]$res<total_num>\x[2] modules appear unusable. See https://toast.perl6.party/ for details."
 }
