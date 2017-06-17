@@ -8,6 +8,7 @@ use Buggable::Plugin::RT;
 use Buggable::Plugin::Eco;
 use Buggable::Plugin::Speed;
 use Buggable::Plugin::Win;
+use Buggable::Plugin::Toast;
 
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
@@ -35,6 +36,7 @@ class Buggable::Info {
         Buggable::Plugin::TravisWatcher.new,
         Buggable::Plugin::RT.new,
         Buggable::Plugin::Eco.new,
+        Buggable::Plugin::Toast.new,
         Buggable::Plugin::Speed.new,
         Buggable::Plugin::Win.new(db => (
           (conf<win-db-file> || die 'Win lottery database file is missing').IO
