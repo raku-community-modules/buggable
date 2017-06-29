@@ -78,7 +78,7 @@ method !process ($build-id) {
         $state.github++ if $job<log>.lc ~~ m/
             [
                   "git error: fatal: unable to access"
-                | "git error: error: rpc failed"
+                | "error: rpc failed"
                 | 'the command "git fetch origin +refs/pull/' \d+ '/merge:" failed and exited with 128 during .'
             ]
         /;
