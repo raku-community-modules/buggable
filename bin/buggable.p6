@@ -14,7 +14,9 @@ use Buggable::Plugin::CPANTesters;
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
         "\x[2]tags\x[2] | \x[2]tag SOMETAG\x[2] | \x[2]eco\x[2] | "
-            ~ "\x[2]eco\x[2] Some search term | \x[2]speed\x[2]";
+            ~ "\x[2]eco\x[2] Some search term | \x[2]author\x[2] "
+            ~ "github username | \x[2]speed\x[2] | \x[2]testers\x[2] "
+            ~ "CPANTesters report ID";
     }
     multi method irc-to-me ($ where /^\s* source \s*$/) {
         "See: https://github.com/zoffixznet/perl6-buggable";
