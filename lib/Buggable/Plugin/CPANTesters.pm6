@@ -16,5 +16,5 @@ multi method irc-to-me (
     "\x[2]$res<distribution><name>\x[2]"
     ~ ":ver(\x[2]$res<distribution><version>\x[2])"
     ~ " test result \x[2]$res<result><grade>.uc()\x[2]. See more at "
-    ~ temp-page :ext<.txt>, Data::Dump::Tree.new(:!color).get_dump: $res;
+    ~ temp-page :ext<.txt>, Data::Dump::Tree.new.get_dump: $res, :!color;
 }
