@@ -1,6 +1,8 @@
 unit class Buggable::Plugin::CPANTesters;
-use WWW;
+use Data::Dump::Tree;
 use URI::Escape;
+use WWW;
+use Buggable::TempPage;
 
 constant API = 'http://api.cpantesters.org/v3';
 
@@ -13,5 +15,6 @@ multi method irc-to-me (
 
     "\x[2]$res<distribution><name>\x[2]"
     ~ ":ver(\x[2]$res<distribution><version>\x[2])"
-    ~ " test result \x[2]$res<result><grade>.uc()\x[2]. See more at $url"
+    ~ " test result \x[2]$res<result><grade>.uc()\x[2]. See more at "
+    ~ temp-page Data::Dump::Tree.new(:!color).dump: $res;
 }

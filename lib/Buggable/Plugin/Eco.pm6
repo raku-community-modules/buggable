@@ -1,12 +1,11 @@
 unit class Buggable::Plugin::Eco;
 use WWW;
 use URI::Escape;
+use Buggable::TempPage;
 
 constant META-LIST
 = 'https://raw.githubusercontent.com/perl6/ecosystem/master/META.list';
 constant MODULES-SITE  = 'https://modules.perl6.org';
-constant TEMP-DIR      = '/home/zoffix/temp/buggable/'.IO;
-constant TEMP-DIR-URL  = 'https://temp.perl6.party/buggable/';
 has $.log-url          = MODULES-SITE ~ '/update.log';
 has $.search-url       = MODULES-SITE ~ '/s/';
 has $.search-url-human = MODULES-SITE ~ '/#q=';
@@ -87,18 +86,15 @@ multi method irc-to-me ( $e where
     }).grep: *.<author> eq $author
     or return "Did not find any dists for $author";
 
-    my $file = substr rand ~ time ~ ".html", 2;
-    TEMP-DIR.add($file).spurt: "
-        <style>body \{ width: 500px; margin: 20px auto; };
-        a \{ line-height: 1.9em } </style>
-    " ~ @metas.map({
-        my $url = .<github>
-          ?? "https://github.com/{.<author>}/{.<repo>}/tree/{.<branch>}"
-          !! .<gitlab>
-            ?? "https://gitlab.com/{.<author>}/{.<repo>}/"
-            !! 'UNKNOWN';
-        qq|<a href="$url">{.<repo>}</a>|
-    }).join("\n<br>");
-
-    "Found {+@metas} dists for $author. See " ~ TEMP-DIR-URL ~ $file
+    "Found {+@metas} dists for $author. See " ~ temp-page
+        "<style>body \{ width: 500px; margin: 20px auto; };
+            a \{ line-height: 1.9em } </style>
+        " ~ @metas.map({
+            my $url = .<github>
+              ?? "https://github.com/{.<author>}/{.<repo>}/tree/{.<branch>}"
+              !! .<gitlab>
+                ?? "https://gitlab.com/{.<author>}/{.<repo>}/"
+                !! 'UNKNOWN';
+            qq|<a href="$url">{.<repo>}</a>|
+        }).join("\n<br>");
 }
