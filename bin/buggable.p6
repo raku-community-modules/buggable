@@ -9,6 +9,7 @@ use Buggable::Plugin::Eco;
 use Buggable::Plugin::Speed;
 use Buggable::Plugin::Win;
 use Buggable::Plugin::Toast;
+use Buggable::Plugin::CPANTesters;
 
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
@@ -41,4 +42,5 @@ class Buggable::Info {
         Buggable::Plugin::Win.new(db => (
           (conf<win-db-file> || die 'Win lottery database file is missing').IO
         )),
+        Buggable::Plugin::CPANTesters.new,
     );
