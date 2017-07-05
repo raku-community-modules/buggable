@@ -3,16 +3,19 @@ unit class Buggable::Plugin::TravisWatcher does IRC::Client::Plugin;
 use WWW;
 
 method irc-privmsg-channel (
-    $e where /^ 'https://travis-ci.org/rakudo/rakudo/builds/' $<id>=\d+/
+    $e where /^ 'https://travis-ci.org/'
+        $<repo>=['rakudo/rakudo' | 'perl6/doc']
+            '/builds/'
+        $<id>=\d+/
 ) {
-    my $result = self!process: ~$<id> or return;
+    my $result = self!process: ~$<repo>, ~$<id> or return;
     $.irc.send: :where($e.channel), :text($result);
 }
 
-method !process ($build-id) {
+method !process ($repo, $build-id) {
     say 'TravisWatcher: fetching travis build info';
     my $build = jget
-        'https://api.travis-ci.org/repos/rakudo/rakudo/builds/' ~ $build-id
+        'https://api.travis-ci.org/repos/' ~ $repo ~ '/builds/' ~ $build-id
     orelse return 'Failed to fetch build data';
 
     my @failed = $build<matrix>.grep({
@@ -73,6 +76,9 @@ method !process ($build-id) {
             ]?
             "the build has been terminated\n\n"
             \s*
+
+            | 'the job exceeded the maximum time limit for jobs, and'
+              ' has been terminated.'
         $/;
 
         $state.github++ if $job<log>.lc ~~ m/
