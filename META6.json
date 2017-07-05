@@ -8,6 +8,7 @@
         "IRC::Client",
         "URI::Escape",
         "JSON::Fast",
+        "Data::Dump::Tree",
         "WWW"
     ],
     "test-depends" : [
