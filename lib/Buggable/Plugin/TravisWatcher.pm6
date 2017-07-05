@@ -77,8 +77,8 @@ method !process ($repo, $build-id) {
             "the build has been terminated\n\n"
             \s*
 
-            | 'the job exceeded the maximum time limit for jobs, and'
-              ' has been terminated.'
+            | "the job exceeded the maximum time limit for jobs, and"
+              " has been terminated.\n\n"
         $/;
 
         $state.github++ if $job<log>.lc ~~ m/
