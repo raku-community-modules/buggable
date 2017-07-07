@@ -10,6 +10,7 @@ use Buggable::Plugin::Speed;
 use Buggable::Plugin::Win;
 use Buggable::Plugin::Toast;
 use Buggable::Plugin::CPANTesters;
+use Number::Denominate;
 
 class Buggable::Info {
     multi method irc-to-me ($ where /^\s* help \s*$/) {
@@ -45,4 +46,12 @@ class Buggable::Info {
           (conf<win-db-file> || die 'Win lottery database file is missing').IO
         )),
         Buggable::Plugin::CPANTesters.new,
+        class {
+            multi method irc-to-me (
+                $e where /:i ^ 6 \.? d '?'? \s* $ /
+            ) {
+                "I think 6.d Diwali will be released in about "
+                ~ denominate Date.new('2017-10-18').DateTime - DateTime.now
+            }
+        }
     );
