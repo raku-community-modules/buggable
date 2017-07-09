@@ -51,7 +51,7 @@ class Buggable::Info {
                 $e where /:i ^ 6 \.? d '?'? \s* $ /
             ) {
                 "I think 6.d Diwali will be released in about "
-                ~ denominate Date.new('2017-10-18').DateTime - DateTime.now
+                ~ denominate Date.new('2017-10-19').DateTime - DateTime.now
             }
         }
     );
