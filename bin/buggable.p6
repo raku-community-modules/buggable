@@ -50,8 +50,9 @@ class Buggable::Info {
             multi method irc-to-me (
                 $e where /:i ^ 6 \.? d '?'? \s* $ /
             ) {
-                "I think 6.d Diwali will be released in about "
-                ~ denominate Date.new('2017-10-19').DateTime - DateTime.now
+                "¯\_(ツ)_/¯"
+                #"I think 6.d Diwali will be released in about "
+                #~ denominate Date.new('2017-10-19').DateTime - DateTime.now
             }
         }
     );
