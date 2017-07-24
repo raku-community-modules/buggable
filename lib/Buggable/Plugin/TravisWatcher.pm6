@@ -90,7 +90,7 @@ method !process ($repo, $build-id) {
             ]
         /;
 
-        for $job<log> ~~ m:g/^^ "t/"( \d+ \N+? ".t") \s* "."+ \s* ["Failed" | "Dubious"]/ {
+        for $job<log> ~~ m:g/^^ ("t/" \d+ \N+? ".t") \s* "."+ \s* ["Failed" | "Dubious"]/ {
             once $state.jobs-with-test-fail++;
             $state.failed-test-files{~.[0]}++;
         }
