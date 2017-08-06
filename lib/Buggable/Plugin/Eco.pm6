@@ -8,7 +8,7 @@ constant META-LIST
 constant MODULES-SITE  = 'https://modules.perl6.org';
 has $.log-url          = MODULES-SITE ~ '/update.log';
 has $.search-url       = MODULES-SITE ~ '/s/';
-has $.search-url-human = MODULES-SITE ~ '/#q=';
+has $.search-url-human = MODULES-SITE ~ '/s/';
 
 multi method irc-to-me (
     $e where /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s* $ /
