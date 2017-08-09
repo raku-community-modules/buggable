@@ -1,5 +1,4 @@
 unit class Buggable::Plugin::CPANTesters;
-use Data::Dump::Tree;
 use URI::Escape;
 use WWW;
 use Buggable::TempPage;
@@ -12,19 +11,8 @@ multi method irc-to-me (
     my $url = API ~ '/report/' ~ uri-escape ~$<report-id>;
     my $res = jget $url orelse return "Cound not find that ID or API is down."
         ~ " Try manually: $url";
-
-    my role ZR {
-        multi method get_elements (Hash:D $h) {
-            $h.sort(*.key)».kv.map: -> ($k, $v) {
-                $k, ': ', $v
-            }
-        }
-    }
-    my $ddt_res = get_dump :title<Result:>, $res,
-        :!color, :does[ZR, DDTR::UnicodeGlyphs],
-        :!display_info, :width(120) ;
     "\x[2]$res<distribution><name>\x[2]"
     ~ ":ver(\x[2]$res<distribution><version>\x[2])"
     ~ " test result \x[2]$res<result><grade>.uc()\x[2]. See more at "
-    ~ temp-page :ext<.txt>, $ddt_res
+    ~ temp-page :ext<.txt>, $res.perl
 }
