@@ -9,7 +9,7 @@ use Buggable::Plugin::Eco;
 use Buggable::Plugin::Speed;
 use Buggable::Plugin::Win;
 use Buggable::Plugin::Toast;
-use Buggable::Plugin::CPANTesters;
+#use Buggable::Plugin::CPANTesters;
 use Number::Denominate;
 
 class Buggable::Info {
@@ -45,7 +45,7 @@ class Buggable::Info {
         Buggable::Plugin::Win.new(db => (
           (conf<win-db-file> || die 'Win lottery database file is missing').IO
         )),
-        Buggable::Plugin::CPANTesters.new,
+ #       Buggable::Plugin::CPANTesters.new,
         class {
             multi method irc-to-me (
                 $e where /:i ^ 6 \.? d '?'? \s* $ /
