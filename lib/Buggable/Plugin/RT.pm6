@@ -2,7 +2,7 @@ unit class Buggable::Plugin::RT;
 use WWW;
 use URI::Escape;
 
-has $.r6-url = %*ENV<BUGGABLE_R6_HOST> || 'http://perl6.fail/';
+has $.r6-url = %*ENV<BUGGABLE_R6_HOST> || 'https://fail.rakudo.party/';
 
 multi method irc-to-me ($e where /:i ^ [tag|rt|bug] s? '?'? $ /) {
     my $res = jget "$!r6-url.json" orelse return 'Error accessing R6 API';
