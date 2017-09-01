@@ -54,5 +54,15 @@ class Buggable::Info {
                 #"I think 6.d Diwali will be released in about "
                 #~ denominate Date.new('2017-10-19').DateTime - DateTime.now
             }
+        },
+        class {
+            multi method irc-to-me ($ where /:i ^ \s* pizza /) {
+                my @pizza = 'Double Cheese', 'Gourmet', 'Mexican Green Wave', 'Peppy Paneer',
+                    'Margherita', 'Meatzaa', 'Cheese and Barbeque Chicken',
+                    'Chicken Mexican Red Wave', 'Cheese and Pepperoni', 
+                    'Golden Chicken Delight', 'Four Cheese', 'Deluxe', 'Pepperoni and Mushrooms',
+                    'Hawaiian';
+                "Enjoy this slice of @pizza.pick() pizza, my friend! Yummy 🍕"
+            }
         }
     );
