@@ -55,14 +55,17 @@ class Buggable::Info {
                 #~ denominate Date.new('2017-10-19').DateTime - DateTime.now
             }
         },
-        class {
-            multi method irc-to-me ($ where /:i ^ \s* pizza /) {
+        class :: does IRC::Client::Plugin {
+            multi method irc-to-me ($e where /:i ^ \s* pizza [$<who> = \S+]?/) {
+                my $who = $<who> ?? ~<$who> !! $e.nick;
+                $who = $e.nick if $who.lc eq 'me';
                 my @pizza = 'Double Cheese', 'Gourmet', 'Mexican Green Wave', 'Peppy Paneer',
                     'Margherita', 'Meatzaa', 'Cheese and Barbeque Chicken',
                     'Chicken Mexican Red Wave', 'Cheese and Pepperoni', 
                     'Golden Chicken Delight', 'Four Cheese', 'Deluxe', 'Pepperoni and Mushrooms',
-                    'Hawaiian';
-                "Enjoy this slice of @pizza.pick() pizza, my friend! Yummy 🍕"
+                    'Hawaiian', 'Vegan';
+                $.irc.send: :where($e.?channel // $e.nick),
+                    "$who, enjoy this slice of @pizza.pick() pizza, my friend! Yummy 🍕"
             }
-        }
+        }.new
     );
