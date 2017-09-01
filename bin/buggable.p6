@@ -56,7 +56,7 @@ class Buggable::Info {
             }
         },
         class :: does IRC::Client::Plugin {
-            multi method irc-to-me ($e where /:i ^ \s* pizza [$<who> = \S+]?/) {
+            multi method irc-to-me ($e where /:i ^ \s* pizza [\s+ $<who> = \S+]?/) {
                 my $who = $<who> ?? ~<$who> !! $e.nick;
                 $who = $e.nick if $who.lc eq 'me';
                 my @pizza = 'Double Cheese', 'Gourmet', 'Mexican Green Wave', 'Peppy Paneer',
@@ -65,7 +65,7 @@ class Buggable::Info {
                     'Golden Chicken Delight', 'Four Cheese', 'Deluxe', 'Pepperoni and Mushrooms',
                     'Hawaiian', 'Vegan';
                 $.irc.send: :where($e.?channel // $e.nick),
-                    "$who, enjoy this slice of @pizza.pick() pizza, my friend! Yummy 🍕"
+                    :text("$who, enjoy this slice of @pizza.pick() pizza, my friend! Yummy 🍕")
             }
         }.new
     );
