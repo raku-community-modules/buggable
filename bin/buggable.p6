@@ -57,7 +57,7 @@ class Buggable::Info {
         },
         class :: does IRC::Client::Plugin {
             multi method irc-to-me ($e where /:i ^ \s* pizza [\s+ $<who> = \S+]?/) {
-                my $who = $<who> ?? ~<$who> !! $e.nick;
+                my $who = $<who> ?? ~$<who> !! $e.nick;
                 $who = $e.nick if $who.lc eq 'me';
                 my @pizza = 'Double Cheese', 'Gourmet', 'Mexican Green Wave', 'Peppy Paneer',
                     'Margherita', 'Meatzaa', 'Cheese and Barbeque Chicken',
