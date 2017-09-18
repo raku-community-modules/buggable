@@ -35,7 +35,7 @@ method !process ($repo, $build-id) {
         method Str {
             ( $!timeout + $!no-log + $!github + $!jobs-with-test-fail != $!total
                 ?? "☠ Did not recognize some failures. Check results manually."
-                !! ($!jobs-with-test-fail ?? "☠" !! "✓)
+                !! ($!jobs-with-test-fail ?? "☠" !! "✓")
                     ~ " All failures are due to timeout ($!timeout), missing"
                     ~ " build log ($!no-log), GitHub connectivity "
                     ~ "($!github), or failed make test ($!jobs-with-test-fail)."
