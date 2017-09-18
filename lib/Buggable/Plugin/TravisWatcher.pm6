@@ -44,7 +44,7 @@ method !process ($repo, $build-id) {
                         $!jobs-with-test-fail => 'failed make test'
                     ).grep(*.key).map({
                         "{.value} ({.key} failure{"s" if .key > 1})"
-                    }).join(', ')
+                    }).join(', ') ~ '.'
             )
             ~ ( if $.failed-test-files.keys -> $k {
                 " Across all jobs, " ~ (
