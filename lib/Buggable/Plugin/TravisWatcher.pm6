@@ -36,9 +36,15 @@ method !process ($repo, $build-id) {
             ( $!timeout + $!no-log + $!github + $!jobs-with-test-fail != $!total
                 ?? "☠ Did not recognize some failures. Check results manually."
                 !! ($!jobs-with-test-fail ?? "☠" !! "✓")
-                    ~ " All failures are due to: $!timeout x timeout, $!no-log x missing"
-                    ~ " build log, $!github x GitHub connectivity, "
-                    ~ "or $!jobs-with-test-fail x failed make test."
+                    ~ " All failures are due to: "
+                    ~ (
+                        $!timeout             => 'timeout',
+                        $!no-log              => 'missing build log',
+                        $!github              => 'GitHub connectivity',
+                        $!jobs-with-test-fail => 'failed make test'
+                    ).grep(*.key).map({
+                        "{.value} ({.key} failure{"s" if .key > 1})"
+                    }).join(', ')
             )
             ~ ( if $.failed-test-files.keys -> $k {
                 " Across all jobs, " ~ (
