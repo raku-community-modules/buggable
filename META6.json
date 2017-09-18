@@ -6,6 +6,7 @@
     "depends"      : [
         "Number::Denominate",
         "IRC::Client",
+        "IRC::TextColor",
         "URI::Escape",
         "JSON::Fast",
         "WWW"
