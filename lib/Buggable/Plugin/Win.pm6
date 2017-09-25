@@ -14,7 +14,7 @@ sub prize { B ('roll of duck tape', 'can of WD40').pick }
 method irc-started { self!do-draw: :init-only }
 
 multi method irc-privmsg-channel (
-    $e where / ^ \s* [:i '/w' \s* | 'w/in' \s* | '/win' \s* | 'win' \s+ ] $<number>=\d+ $ /
+    $e where / ^ \s* [:i '/w' \s* | 'w/in' \s* | '/win' \s* | 'win' \s+ | "'win" \s+ ] $<number>=\d+ $ /
 ) {
     $.db.spurt: :append, "$e.nick()\n$<number>\n";
     "Thank you for entering &B("Accidental /win Lottery")! "
