@@ -12,7 +12,7 @@ multi method irc-to-me (
 
 sub make-spark ($e, $items, $rows) {
     $rows  > 4   and return "Refusing to draw more than 4 rows";
-    $items > 200 and return "Refusing to do more than 200 last entries";
+    $items > 120 and return "Refusing to do more than 120 last entries";
 
     my $res = get $log-url orelse return 'Error accessing speed log';
     my @recent = $res.lines.tail: $items;
