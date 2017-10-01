@@ -5,21 +5,24 @@ use strict;
 use warnings;
 
 use constant CPAN_URL => 'https://www.cpan.org/authors/id/';
+use constant STORE    => 'cpan-last-reported';
 
 use Net::NNTP;
 use Mew;
+use Mojo::File qw/path/;
 
 has _url   => Maybe[Str], is => 'lazy', default => 'nntp.perl.org';
 has _group => Maybe[Str], is => 'lazy', default => 'perl.cpan.uploads';
 has _nntp  => InstanceOf['Net::NNTP'], is => 'lazy', default => sub {
     Net::NNTP->new(shift->_url)
 };
-has _last => Int, default => 0, is => 'rw';
+has _last => Int, default => sub { 0 + path(STORE)->slurp }, is => 'rw';
 
 sub poll {
     my $self = shift;
     my ($s, $y, $last) = $self->_nntp->group($self->_group);
-    $self->_last($last-30) unless $self->_last;
+    use Data::Dumper;
+    print Dumper [$s, $y, $last];
     return [] if $last <= $self->_last;
 
     my @uploads;
@@ -31,7 +34,9 @@ sub poll {
             author => $2,
             module => $3,
         };
+        say "Found ID#$_ is $uploads[-1]{url}";
     }
+    path(STORE)->spurt($self->_last($last));
     return \@uploads;
 }
 
