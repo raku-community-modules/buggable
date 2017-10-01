@@ -17,7 +17,8 @@ has _last => Int, default => sub { 0 + path(STORE)->slurp }, is => 'rw';
 
 sub poll {
     my $self = shift;
-    my ($s, $y, $last) = Net::NNTP->new(shift->_url)->group($self->_group);
+    my $nntp = Net::NNTP->new($self->_url);
+    my ($s, $y, $last) = $nntp->group($self->_group);
     use Data::Dumper;
     print Dumper [$s, $y, $last];
     return [] if $last <= $self->_last;
