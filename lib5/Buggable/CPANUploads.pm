@@ -28,7 +28,7 @@ sub poll {
     my @uploads;
     for ($self->_last+1 .. $last) {
         next unless (join "\n", $self->_nntp->head($_)->@*)
-            =~ m{^Subject: CPAN Upload: (\S/\S\S/([^/]+)/Perl6/(\S+))}m;
+            =~ m{^Subject: CPAN Upload:\s*(\S/\S\S/([^/]+)/Perl6/(\S+))}m;
         push @uploads, {
             url    => CPAN_URL . $1,
             author => $2,
