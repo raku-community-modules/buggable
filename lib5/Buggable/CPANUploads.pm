@@ -13,14 +13,11 @@ use Mojo::File qw/path/;
 
 has _url   => Maybe[Str], is => 'lazy', default => 'nntp.perl.org';
 has _group => Maybe[Str], is => 'lazy', default => 'perl.cpan.uploads';
-has _nntp  => InstanceOf['Net::NNTP'], is => 'lazy', default => sub {
-    Net::NNTP->new(shift->_url)
-};
 has _last => Int, default => sub { 0 + path(STORE)->slurp }, is => 'rw';
 
 sub poll {
     my $self = shift;
-    my ($s, $y, $last) = $self->_nntp->group($self->_group);
+    my ($s, $y, $last) = Net::NNTP->new(shift->_url)->group($self->_group);
     use Data::Dumper;
     print Dumper [$s, $y, $last];
     return [] if $last <= $self->_last;
@@ -36,7 +33,7 @@ sub poll {
         };
         say "Found ID#$_ is $uploads[-1]{url}";
     }
-    path(STORE)->spurt($self->_last($last));
+    path(STORE)->spurt($self->_last($last)) if $last;
     return \@uploads;
 }
 
