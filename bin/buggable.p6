@@ -9,6 +9,7 @@ use Buggable::Plugin::Eco;
 use Buggable::Plugin::Speed;
 use Buggable::Plugin::Win;
 use Buggable::Plugin::Toast;
+use Buggable::Plugin::CPANUploads;
 #use Buggable::Plugin::CPANTesters;
 use Number::Denominate;
 
@@ -26,11 +27,14 @@ class Buggable::Info {
     multi method irc-to-me ($ where /'bot' \s* 'snack'/) { "om nom nom nom"; }
 }
 
+my @channels = %*ENV<BUGGABLE_DEBUG>
+    ?? '#zofbot' !! <#perl6  #perl6-dev  #zofbot  #moarvm>;
+
 .run with IRC::Client.new:
     :nick<buggable>,
     :username<zofbot-buggable>,
     :host(%*ENV<BUGGABLE_IRC_HOST> // 'irc.freenode.net'),
-    :channels( %*ENV<BUGGABLE_DEBUG> ?? '#zofbot' !! |<#perl6  #perl6-dev  #zofbot  #moarvm>),
+    :@channels,
 #    |(:password(conf<irc-pass>)
  #       if conf<irc-pass> and not %*ENV<BUGGABLE_DEBUG>
   #  ),
@@ -42,6 +46,9 @@ class Buggable::Info {
         Buggable::Plugin::Eco.new,
         Buggable::Plugin::Toast.new,
         Buggable::Plugin::Speed.new,
+        Buggable::Plugin::CPANUploads.new(:channels[
+            %*ENV<BUGGABLE_DEBUG> ?? '#zofbot' !! <#perl6  #perl6-dev>;
+        ]),
         Buggable::Plugin::Win.new(db => (
           (conf<win-db-file> || die 'Win lottery database file is missing').IO
         )),
@@ -61,7 +68,7 @@ class Buggable::Info {
                 $who = $e.nick if $who.lc eq 'me';
                 my @pizza = 'Double Cheese', 'Gourmet', 'Mexican Green Wave', 'Peppy Paneer',
                     'Margherita', 'Meatzaa', 'Cheese and Barbeque Chicken',
-                    'Chicken Mexican Red Wave', 'Cheese and Pepperoni', 
+                    'Chicken Mexican Red Wave', 'Cheese and Pepperoni',
                     'Golden Chicken Delight', 'Four Cheese', 'Deluxe', 'Pepperoni and Mushrooms',
                     'Hawaiian', 'Vegan';
                 $.irc.send: :where($e.?channel // $e.nick),

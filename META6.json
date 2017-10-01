@@ -9,7 +9,8 @@
         "IRC::TextColor",
         "URI::Escape",
         "JSON::Fast",
-        "WWW"
+        "WWW",
+        "Inline::Perl5"
     ],
     "test-depends" : [
         "Test"
