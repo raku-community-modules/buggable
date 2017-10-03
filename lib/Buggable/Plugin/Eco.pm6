@@ -40,7 +40,16 @@ multi method irc-to-me (
 multi method irc-to-me ( $e where
     /:i ^ [ 'eco' 'system'? | 'module' 's'? ] '?'? \s+ $<term>=.+ \s* $/
 ) {
-    my $term = ~$<term>;
+    self!search-eco: ~$<term>;
+}
+
+multi method irc-privmsg-channel ( $e where
+    /:i ^ \s* [ 'eco' 'system'? ] ':' \s+ $<term>=.+ \s* $/
+) {
+    self!search-eco: ~$<term>;
+}
+
+method !search-eco ($term) {
     my @dists = |(
         jget $.search-url ~ uri-escape($term) ~ '/.json'
             orelse return "Failed to decode result JSON: $!"
