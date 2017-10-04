@@ -4,7 +4,7 @@ use 5.026;
 use strict;
 use warnings;
 
-use constant CPAN_URL => 'https://www.cpan.org/authors/id/';
+use constant CPAN_URL => 'https://cpan.metacpan.org/authors/id/';
 use constant STORE    => 'cpan-last-reported';
 
 use Net::NNTP;
