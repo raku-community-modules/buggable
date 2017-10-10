@@ -10,6 +10,7 @@ use Buggable::Plugin::Speed;
 use Buggable::Plugin::Win;
 use Buggable::Plugin::Toast;
 use Buggable::Plugin::CPANUploads;
+use Buggable::Plugin::Zen;
 #use Buggable::Plugin::CPANTesters;
 use Number::Denominate;
 
@@ -46,6 +47,7 @@ my @channels = %*ENV<BUGGABLE_DEBUG>
         Buggable::Plugin::Eco.new,
         Buggable::Plugin::Toast.new,
         Buggable::Plugin::Speed.new,
+        Buggable::Plugin::Zen.new,
         Buggable::Plugin::CPANUploads.new(:channels[
             %*ENV<BUGGABLE_DEBUG> ?? '#zofbot' !! <#perl6  #perl6-dev>;
         ]),
