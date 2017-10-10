@@ -1,6 +1,6 @@
 unit class Buggable::Plugin::Zen;
 
-constant quotes = gen-quotes;
+my \quotes = gen-quotes;
 
 multi method irc-to-me ($e where /:i ^ 'zen' \s+ /) { quotes.pick }
 
