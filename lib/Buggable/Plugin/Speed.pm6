@@ -29,7 +29,7 @@ sub make-spark ($e, $items, $rows) {
     my @spark = draw-spark(:$rows, :$min, :$range, :data(@recent));
     my @info  = "dates: $date-range",
                 "range: %stats<min>s–%stats<max>s",
-                "speed: " ~ speed-diff @recent.head, @recent.tail;
+                "speed: " ~ speed-diff @recent;
 
     $e.reply($_) for do given $rows {
         when 1  { "@spark[0] @info.join('; ')" }
@@ -70,7 +70,12 @@ sub draw-spark (:$rows, :$min, :$range, :@data) {
     }
 }
 
-sub speed-diff ($before, $after) {
+sub speed-diff (@marks) {
+    my $tail-width = Int(10 min @marks/2);
+    my $head-width = Int(3  min @marks/4);
+    my $before = @marks.tail($tail-width).sum / $tail-width;
+    my $after  = @marks.head($head-width).sum / $head-width;
+
     my ($diff, $how);
     if ($before/$after).round(.01) == 1 {
         return "~0% difference"
