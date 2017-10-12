@@ -7,7 +7,9 @@ multi method irc-to-me (
     $e where /:i ^ [ 'speed' | 'perf' 'ormance'? ] [ \s* $<last>=\d+ ]?
                    [ \s* ':' $<rows>=\d+ ]? [ \s* '?' ]? \s* $ /
 ) {
-    make-spark $e, +($<last> // 0) || 50, +($<rows> // 0) || 1
+   (try make-spark $e, +($<last> // 0) || 50, +($<rows> // 0) || 1)
+    // $e.reply: "Try larger period. Could not calculate using period $<last>: $!";
+    Nil
 }
 
 sub make-spark ($e, $items, $rows) {
@@ -39,7 +41,7 @@ sub make-spark ($e, $items, $rows) {
                   @spark[3..*] }
     }
 
-    Nil
+    True
 }
 
 sub simple-stats (@data) {
@@ -71,10 +73,10 @@ sub draw-spark (:$rows, :$min, :$range, :@data) {
 }
 
 sub speed-diff (@marks) {
-    my $tail-width = Int(10 min @marks/2);
-    my $head-width = Int(3  min @marks/4);
-    my $before = @marks.tail($tail-width).sum / $tail-width;
-    my $after  = @marks.head($head-width).sum / $head-width;
+    my $before-width = (10 min @marks/2).round: 1;
+    my  $after-width = (3  min @marks/4).round: 1;
+    my $before = @marks.head($before-width).sum / $before-width;
+    my $after  = @marks.tail( $after-width).sum /  $after-width;
 
     my ($diff, $how);
     if ($before/$after).round(.01) == 1 {
@@ -88,6 +90,7 @@ sub speed-diff (@marks) {
         $diff = $after/$before;
         $how = 'slower';
     }
-    $diff >= 2 ?? "{($diff).round: .01   }x $how"
-               !! "{(($diff-1)*100).round}% $how"
+    ($diff >= 2 ?? "{($diff).round: .01   }x $how"
+                !! "{(($diff-1)*100).round}% $how")
+    ~ " (widths: $before-width/$after-width)"
 }
