@@ -24,6 +24,9 @@ class Buggable::Info {
     multi method irc-to-me ($ where /^\s* source \s*$/) {
         "See: https://github.com/zoffixznet/perl6-buggable";
     }
+    multi method irc-to-me ($ where /:i ^ \s* christmas \s* $/) {
+        "Christmas is in " ~ denominate Date.new("2017-12-25").DateTime - DateTime.now
+    }
 
     multi method irc-to-me ($ where /'bot' \s* 'snack'/) { "om nom nom nom"; }
 }
