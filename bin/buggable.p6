@@ -30,6 +30,10 @@ class Buggable::Info {
     multi method irc-to-me ($ where /:i ^ f[ar]? \s* c[ry]? \s*5? \s* $/) {
         "Far Cry 5 will be released in " ~ denominate Date.new("2018-02-27").DateTime - DateTime.now
     }
+    multi method irc-to-me ($ where /:i ^ \s* office \s* space  \s* $/) {
+        "Office Space Mode enabled in " ~ denominate Date.new("2019-04-03").DateTime - DateTime.now
+    }
+
 
     multi method irc-to-me ($ where /'bot' \s* 'snack'/) { "om nom nom nom"; }
 }
