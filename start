@@ -1,3 +1,3 @@
 #!/bin/sh
-screen -S buggable perl6 bin/buggable.p6
+screen -L -S buggable perl6 bin/buggable.p6
 
