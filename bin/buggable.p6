@@ -59,7 +59,7 @@ my @channels = %*ENV<BUGGABLE_DEBUG>
         Buggable::Plugin::Speed.new,
         Buggable::Plugin::Zen.new,
         Buggable::Plugin::CPANUploads.new(:channels[
-            %*ENV<BUGGABLE_DEBUG> ?? '#zofbot' !! <#perl6  #perl6-dev>;
+            %*ENV<BUGGABLE_DEBUG> ?? '#zofbot' !! <#perl6  #zofbot>;
         ]),
         Buggable::Plugin::Win.new(db => (
           (conf<win-db-file> || die 'Win lottery database file is missing').IO
