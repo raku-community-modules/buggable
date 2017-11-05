@@ -1,7 +1,7 @@
 unit class Buggable::Plugin::Speed;
 use WWW;
 
-constant $log-url = 'http://tux.nl/Talks/CSV6/speed.log';
+constant $log-url = 'http://tux.nl/Talks/CSV6/speed-all.log';
 
 multi method irc-to-me (
     $e where /:i ^ [ 'speed' | 'perf' 'ormance'? ] [ \s* $<last>=\d+ ]?
