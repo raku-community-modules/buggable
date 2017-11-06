@@ -32,7 +32,8 @@ sub list-tests ($e) {
     my $res   = get $log-url orelse return 'Error accessing speed log';
     my @tests = $res.lines.map(*.trans: [' --'] => ['--'])
                     .map(*.words.[2]).unique.sort;
-    $e.reply: "Known performance tests: @tests.join(', ')"
+    $e.reply: $_ for comb /.**{1..400} )> <before \s|$> .?/, 
+        "Known performance tests: @tests.join(', ')"
 }
 
 sub make-spark ($e, $items, $rows, $test) {
