@@ -4,20 +4,44 @@ use WWW;
 constant $log-url = 'http://tux.nl/Talks/CSV6/speed-all.log';
 
 multi method irc-to-me (
-    $e where /:i ^ [ 'speed' | 'perf' 'ormance'? ] [ \s* $<last>=\d+ ]?
-                   [ \s* ':' $<rows>=\d+ ]? [ \s* '?' ]? \s* $ /
+    $e where /:i ^ [ 'speed' | 'perf' 'ormance'? ]
+                   \s+ 'tests' [ \s* '?' ]? \s* $ /
 ) {
-   (try make-spark $e, +($<last> // 0) || 50, +($<rows> // 0) || 1)
+   (try list-tests $e)
+    // $e.reply: "Unable to list speed available tests; try again later: $!";
+    Nil
+}
+
+multi method irc-to-me (
+    $e where /:i ^ [ 'speed' | 'perf' 'ormance'? ]
+                   [ \s* $<last>=\d+ ]?
+                   [ \s* ':' $<rows>=\d+ ]?
+                   [ \s+ [    $<test>=\S+
+                         | \" $<test>=<-[ " ]>+ \"
+                         | \' $<test>=<-[ ' ]>+ \'
+                         ] ]?
+                   [ \s* '?' ]?
+                     \s* $ /
+) {
+   (try make-spark $e, +($<last> // 0) || 50, +($<rows> // 0) || 1, ~($<test> // 'test-t-20--race'))
     // $e.reply: "Try larger period. Could not calculate using period $<last>: $!";
     Nil
 }
 
-sub make-spark ($e, $items, $rows) {
+sub list-tests ($e) {
+    my $res   = get $log-url orelse return 'Error accessing speed log';
+    my @tests = $res.lines.map(*.trans: [' --'] => ['--'])
+                    .map(*.words.[2]).unique.sort;
+    $e.reply: "Known performance tests: @tests.join(', ')"
+}
+
+sub make-spark ($e, $items, $rows, $test) {
     $rows  > 4   and return "Refusing to draw more than 4 rows";
     $items > 120 and return "Refusing to do more than 120 last entries";
 
     my $res = get $log-url orelse return 'Error accessing speed log';
-    my @recent = $res.lines.grep(*.contains: "test-t-20 --race").tail: $items;
+    my @recent = $res.lines.map(*.trans: [' --'] => ['--'])
+                     .grep(*.contains: " $test ").tail: $items;
     my $date-range = @recent.map(*.words[0])[0,*-1].join: '–';
     @recent .= map(*.words[*-1]);
     @recent .= grep: * ne '999.999'; # filter out bogus results
