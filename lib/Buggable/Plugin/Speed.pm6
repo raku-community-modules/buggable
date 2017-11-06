@@ -28,12 +28,13 @@ multi method irc-to-me (
     Nil
 }
 
-sub list-tests ($e --> True) {
+sub list-tests ($e) {
     my $res   = get $log-url orelse return 'Error accessing speed log';
     my @tests = $res.lines.map(*.trans: [' --'] => ['--'])
                     .map(*.words.[2]).unique.sort;
     $e.reply: $_ for comb /.**{1..400} )> <before \s|$> .?/, 
-        "Known performance tests: @tests.join(', ')"
+        "Known performance tests: @tests.join(', ')";
+    True
 }
 
 sub make-spark ($e, $items, $rows, $test) {
