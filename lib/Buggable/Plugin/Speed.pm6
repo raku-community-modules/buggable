@@ -28,7 +28,7 @@ multi method irc-to-me (
     Nil
 }
 
-sub list-tests ($e) {
+sub list-tests ($e --> True) {
     my $res   = get $log-url orelse return 'Error accessing speed log';
     my @tests = $res.lines.map(*.trans: [' --'] => ['--'])
                     .map(*.words.[2]).unique.sort;
