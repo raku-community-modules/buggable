@@ -73,10 +73,10 @@ sub draw-spark (:$rows, :$min, :$range, :@data) {
 }
 
 sub speed-diff (@marks) {
-    my $before-width = (10 min @marks/2).round: 1;
-    my  $after-width = (3  min @marks/4).round: 1;
-    my $before = @marks.head($before-width).sum / $before-width;
-    my $after  = @marks.tail( $after-width).sum /  $after-width;
+    my $before-width = (9 min @marks/2).round: 1;
+    my  $after-width = (3 min @marks/4).round: 1;
+    my $before = @marks.head($before-width).sort(+*).[$before-width div 2];
+    my $after  = @marks.tail( $after-width).sort(+*).[$after-width  div 2];
 
     my ($diff, $how);
     if ($before/$after).round(.01) == 1 {
