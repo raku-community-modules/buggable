@@ -38,7 +38,7 @@ sub make-spark ($e, $items, $rows) {
         when 2  { "@spark[0] @info[0]", "@spark[1] @info[1..2].join('; ')" }
         when 3  { "@spark[0] @info[0]", "@spark[1] @info[1]", "@spark[2] @info[2]" }
         default { "@spark[0] @info[0]", "@spark[1] @info[1]", "@spark[2] @info[2]",
-                  @spark[3..*] }
+                  |@spark[3..*] }
     }
 
     True
