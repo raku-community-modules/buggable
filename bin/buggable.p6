@@ -25,10 +25,10 @@ class Buggable::Info {
         "See: https://github.com/zoffixznet/perl6-buggable";
     }
     multi method irc-to-me ($ where /:i ^ \s* christmas \s* $/) {
-        "Christmas is in " ~ denominate Date.new("2017-12-25").DateTime - DateTime.now
+        "Christmas is in " ~ denominate Date.new("2018-12-25").DateTime - DateTime.now
     }
     multi method irc-to-me ($ where /:i ^ f[ar]? \s* c[ry]? \s*5? \s* $/) {
-        "Far Cry 5 will be released in " ~ denominate Date.new("2018-02-27").DateTime - DateTime.now
+        "Far Cry 5 will be released in " ~ denominate Date.new("2018-03-27").DateTime - DateTime.now
     }
     multi method irc-to-me ($ where /:i ^ \s* freedom  \s* $/) {
         "Freedom achieved in " ~ denominate Date.new("2019-04-03").DateTime - DateTime.now
