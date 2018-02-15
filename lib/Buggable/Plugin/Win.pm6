@@ -14,10 +14,9 @@ sub prize { B ('roll of duck tape', 'can of WD40').pick }
 method irc-started { self!do-draw: :init-only }
 
 multi method irc-privmsg-channel (
-    $e where / ^ <:Cc + [\s]>* [:i
-           '/w' <:Cc + [\s]>* | 'w/in' <:Cc + [\s]>* | '/win' <:Cc + [\s]>*
-        | 'win' <:Cc + [\s]>+ | "'win" <:Cc + [\s]>+
-     ] $<number>=\d+ <:Cc + [\s]>*
+    $e where / ^ <:Cc + [\s]>*
+        [:i '/w' | '.win' | 'w/in' | '/win']
+        <:Cc + [\s]>* $<number>=\d+ <:Cc + [\s]>*
     $ /
 ) {
     $.db.spurt: :append, "$e.nick()\n$<number>\n";
