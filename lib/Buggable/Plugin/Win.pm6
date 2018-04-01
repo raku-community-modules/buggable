@@ -57,8 +57,9 @@ method !do-draw (:$init-only, :$no-promise) {
     unless $no-promise {
         # Reset the lottery
         $.db.spurt: '' unless $init-only;
-        $!when = DateTime.now.later(:month).clone:
+        $!when = DateTime.now.in-timezone(0).later(:month).clone:
             :1day, :0hour, :0minute, :0second, :0timezone;
+        dd [$!when, self!draw-when];
         Promise.in(self!draw-when).then: { self!do-draw };
         say "The next Win lottery draw will happen in {self!draw-when: :human}"
     }
