@@ -57,7 +57,8 @@ method !search-eco ($term) {
 
     if @dists == 1 {
         my $dist = @dists[0];
-        return "\x[2]$dist<name>\x[2] '$dist<description>': $dist<url>";
+        return "\x[2]$dist<name>\x[2] '$dist<description>': "
+          ~ $dist<mpo6_dist_url>;
     }
     elsif @dists.grep({.<name> eq $term}) -> $exact {
         return "\x[2]$exact[0]<name>\x[2] '$exact[0]<description>'"
