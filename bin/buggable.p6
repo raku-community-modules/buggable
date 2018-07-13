@@ -28,7 +28,7 @@ class Buggable::Info {
         "Christmas is in " ~ denominate Date.new("2018-12-25").DateTime - DateTime.now
     }
     multi method irc-to-me ($ where /:i ^ \s* [[6\.?]? d | diwali] \s* $/) {
-        my $commits := 3095;
+        my $commits := 2942;
 
         my $days := Date.new("2018-11-06") - Date.today;
         "Diwali is in $days days, which is " ~ (denominate Date.new("2018-11-06").DateTime - DateTime.now)
