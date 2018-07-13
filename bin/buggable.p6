@@ -32,7 +32,7 @@ class Buggable::Info {
 
         my $days := Date.new("2018-11-06") - Date.today;
         "Diwali is in $days days, which is " ~ (denominate Date.new("2018-11-06").DateTime - DateTime.now)
-        ~ ". Need to review {Int($commits/$days)} commits per day ({Int(($commits/$days)*7)}/week)to complete. Need {Int($days/14)} teaser flyers."
+        ~ ". Need to review {Int($commits/($days-30))} commits per day ({Int(($commits/($days-30))*7)}/week)to complete. Need {Int($days/14)} teaser flyers."
     }
     multi method irc-to-me ($ where /:i ^ f[ar]? \s* c[ry]? \s*5? \s* $/) {
         "Far Cry 5 will be released in " ~ denominate Date.new("2018-03-27").DateTime - DateTime.now
