@@ -28,8 +28,9 @@ class Buggable::Info {
         "Christmas is in " ~ denominate Date.new("2018-12-25").DateTime - DateTime.now
     }
     multi method irc-to-me ($ where /:i ^ \s* [[6\.?]? d | diwali] \s* $/) {
-        "Diwali is in " ~ (Date.new("2018-11-06") - Date.today)
-        ~ ", which is " ~ denominate Date.new("2018-11-06").DateTime - DateTime.now
+        my $days := Date.new("2018-11-06") - Date.today;
+        "Diwali is in $days days, which is " ~ (denominate Date.new("2018-11-06").DateTime - DateTime.now)
+        ~ ". Need to review {3095/$days} commits per day to complete. Need {Int($days/14)} teaser flyers."
     }
     multi method irc-to-me ($ where /:i ^ f[ar]? \s* c[ry]? \s*5? \s* $/) {
         "Far Cry 5 will be released in " ~ denominate Date.new("2018-03-27").DateTime - DateTime.now
