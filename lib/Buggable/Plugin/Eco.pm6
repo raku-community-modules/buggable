@@ -63,7 +63,7 @@ method !search-eco ($term) {
     elsif @dists.grep({.<name> eq $term}) -> $exact {
         return "\x[2]$exact[0]<name>\x[2] '$exact[0]<description>'"
             ~ ": $exact[0]<url> \x[2]{@dists - 1}\x[2] other matching results: "
-            ~ $.search-url-human ~ uri-escape(~$<term>);
+            ~ $.search-url-human ~ uri-escape($term);
     }
     elsif @dists {
         my $total = +@dists;
