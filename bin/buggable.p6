@@ -15,6 +15,7 @@ use Buggable::Plugin::Zen;
 use Number::Denominate;
 
 class Buggable::Info {
+    has $!commits-d = 2856;
     multi method irc-to-me ($ where /^\s* help \s*$/) {
         "\x[2]tags\x[2] | \x[2]tag SOMETAG\x[2] | \x[2]eco\x[2] | "
             ~ "\x[2]eco\x[2] Some search term | \x[2]author\x[2] "
@@ -27,12 +28,13 @@ class Buggable::Info {
     multi method irc-to-me ($ where /:i ^ \s* christmas \s* $/) {
         "Christmas is in " ~ denominate Date.new("2018-12-25").DateTime - DateTime.now
     }
+    multi method irc-to-me ($ where /:i ^ \s* commits \s+ $<n>=\d+/) {
+        "Set 6.d commits N to {$!commits-d = +$<n>}"
+    }
     multi method irc-to-me ($ where /:i ^ \s* [[6\.?]? d | diwali] \s* $/) {
-        my $commits := 2942;
-
         my $days := Date.new("2018-11-06") - Date.today;
         "Diwali is in $days days, which is " ~ (denominate Date.new("2018-11-06").DateTime - DateTime.now)
-        ~ ". Need to review {Int($commits/($days-30))} commits per day ({Int(($commits/($days-30))*7)}/week)to complete. Need {Int($days/14)} teaser flyers."
+        ~ ". Need to review {Int($!commits-d/($days-30))} commits per day ({Int(($!commits-d/($days-30))*7)}/week)to complete. Need {Int($days/14)} teaser flyers."
     }
     multi method irc-to-me ($ where /:i ^ f[ar]? \s* c[ry]? \s*5? \s* $/) {
         "Far Cry 5 will be released in " ~ denominate Date.new("2018-03-27").DateTime - DateTime.now
