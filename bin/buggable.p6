@@ -33,8 +33,9 @@ class Buggable::Info {
     }
     multi method irc-to-me ($ where /:i ^ \s* [[6\.?]? d | diwali] \s* $/) {
         my $days := Date.new("2018-11-06") - Date.today;
+        my $done-flyers := 1;
         "Diwali is in $days days, which is " ~ (denominate Date.new("2018-11-06").DateTime - DateTime.now)
-        ~ ". Need to review {Int($!commits-d/($days-30))} commits per day ({Int(($!commits-d/($days-30))*7)}/week)to complete. Need {Int($days/14)} teaser flyers."
+        ~ ". Need to review {Int($!commits-d/($days-30))} commits per day ({Int(($!commits-d/($days-30))*7)}/week) to complete. Need {Int($days/14) - $done-flyers} teaser flyers."
         ~ " Still have 9 TODO features costing 81 hours. Still have 2.3 policies to write. Still have ~95% of ChangeLog to do."
     }
     multi method irc-to-me ($ where /:i ^ f[ar]? \s* c[ry]? \s*5? \s* $/) {
