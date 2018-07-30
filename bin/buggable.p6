@@ -28,7 +28,7 @@ class Buggable::Info {
     multi method irc-to-me ($ where /:i ^ \s* christmas \s* $/) {
         "Christmas is in " ~ denominate Date.new("2018-12-25").DateTime - DateTime.now
     }
-    multi method irc-to-me ($ where /:i ^ \s* commits \s+ [$<n>=\d+]?/) {
+    multi method irc-to-me ($ where /:i ^ \s* commits [\s+ $<n>=\d+]?/) {
         $<n> ?? "Set 6.d commits N to {$!commits-d = +$<n>}"
              !! "Commits are currently set at $!commits-d"
     }
