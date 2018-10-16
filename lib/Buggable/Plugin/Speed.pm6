@@ -38,10 +38,10 @@ sub list-tests ($e) {
 }
 
 sub make-spark ($e, $items, $rows, $test) {
-    $rows  > 4   and return "Refusing to draw more than 4 rows";
-    $items > 120 and return "Refusing to do more than 120 last entries";
+    $rows  > 4   and die "Refusing to draw more than 4 rows";
+    $items > 120 and die "Refusing to do more than 120 last entries";
 
-    my $res = get $log-url orelse return 'Error accessing speed log';
+    my $res = get $log-url orelse die 'Error accessing speed log';
     my @recent = $res.lines.map(*.trans: [' --'] => ['--'])
                      .grep(*.contains: " $test ").tail: $items;
     my $date-range = @recent.map(*.words[0])[0,*-1].join: '–';
