@@ -15,7 +15,7 @@ use Buggable::Plugin::Zen;
 use Number::Denominate;
 
 class Buggable::Info {
-    has $!commits-d = 2278;
+    has $!commits-d = 3504;
     multi method irc-to-me ($ where /^\s* help \s*$/) {
         "\x[2]tags\x[2] | \x[2]tag SOMETAG\x[2] | \x[2]eco\x[2] | "
             ~ "\x[2]eco\x[2] Some search term | \x[2]author\x[2] "
@@ -36,8 +36,8 @@ class Buggable::Info {
         my $days := Date.new("2018-11-06") - Date.today;
         my $done-flyers := 0;
         "Diwali is in $days days, which is " ~ (denominate Date.new("2018-11-06").DateTime - DateTime.now)
-        ~ ". Need to review {Int($!commits-d/($days-30))} commits per day ({Int(($!commits-d/($days-30))*7)}/week) to complete. Need {Int($days/14) - $done-flyers} teaser flyers."
-        ~ " Still have 2 TODO features costing 8 hours. Still have 0.3 policies to write. Still have ~95% of ChangeLog to do."
+        ~ ". Need to changelog {Int($!commits-d/($days-6)) // "N/A"} commits per day ({Int(($!commits-d/($days-6))*7) // "N/A"}/week). Need release brochure."
+        ~ " Still have 2 TODO features costing 8 hours. Still have 0.3 policies to write."
     }
     multi method irc-to-me ($ where /'bot' \s* 'snack'/) { "om nom nom nom"; }
 }
