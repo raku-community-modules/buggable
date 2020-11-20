@@ -24,6 +24,6 @@
     },
     "authors" : ["Zoffix Znet"],
     "support" : {
-        "source" : "git://github.com/raku-community-modules/Buggable.git"
+        "source" : "git://github.com/raku-community-modules/buggable.git"
     }
 }
