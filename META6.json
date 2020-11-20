@@ -2,7 +2,7 @@
     "perl"         : "6.c",
     "name"         : "buggable",
     "version"      : "1.001002",
-    "description"  : "Helper bot for Perl 6 development",
+    "description"  : "Helper bot for Raku development",
     "depends"      : [
         "Number::Denominate",
         "IRC::Client",
@@ -24,6 +24,6 @@
     },
     "authors" : ["Zoffix Znet"],
     "support" : {
-        "source" : "git://github.com/zoffixznet/perl6-buggable.git"
+        "source" : "git://github.com/raku-community-modules/Buggable.git"
     }
 }
